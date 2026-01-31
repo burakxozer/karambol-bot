@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karambol Kriket w/ DartBot</title>
+
+<style>
+body{margin:0;background:#0b1220;color:#e5e7eb;font-family:system-ui}
+.app{max-width:900px;margin:auto;padding:12px;position:relative}
+h1{text-align:center}
+.top-right{position:absolute;top:10px;right:16px;font-size:14px;opacity:.9}
+.card{background:#111827;border-radius:16px;padding:14px;margin-bottom:12px}
+button{width:100%;padding:14px;font-size:18px;border:none;border-radius:14px;background:#22c55e;color:#000;margin-top:10px}
+button.gray{background:#374151;color:#fff}
+select{width:100%;padding:12px;font-size:18px;border-radius:12px;margin-top:10px}
+.screen{display:none}
+.active{display:block}
+.board{border-top:2px solid #374151;margin-top:10px}
+.row{display:grid;grid-template-columns:1fr 60px 1fr;border-bottom:1px solid #374151}
+.cell{height:46px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.mid{font-weight:700}
+.popup{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center}
+.popup-inner{background:#111827;padding:22px;border-radius:18px;width:90%;max-width:380px;text-align:center}
+.throw{margin:6px 0;font-size:18px}
+.win{font-size:34px;color:#22c55e}
+.lose{font-size:34px;color:#ef4444}
+</style>
+</head>
+
+<body>
+<div class="app">
+<h1>🎯 Karambol Kriket w/ DartBot</h1>
+<div id="levelInfo" class="top-right"></div>
+
+<div id="start" class="card screen active">
+<h2>Maç Türü</h2>
+<button onclick="startGame()">Oyuna Başla</button>
+
+<h2>Dart Bot Seviyesi</h2>
+<select id="botLevel">
+  <option value="1">Level 1</option><option value="2">Level 2</option>
+  <option value="3">Level 3</option><option value="4">Level 4</option>
+  <option value="5">Level 5</option><option value="6">Level 6</option>
+  <option value="7">Level 7</option><option value="8">Level 8</option>
+  <option value="9">Level 9</option><option value="10">Level 10</option>
+</select>
+</div>
+
+<div id="game" class="card screen">
+<h2 id="turnInfo"></h2>
+<div id="board" class="board"></div>
+<button class="gray" onclick="undo()">UNDO (Bu El)</button>
+<button onclick="endPlayer()">Dart Bota Geç</button>
+<button class="gray" onclick="restart()">🔄 Oyunu Baştan Başlat</button>
+</div>
+</div>
+
+<div id="popup" class="popup">
+  <div class="popup-inner" id="popupContent"></div>
+</div>
+
+<script>
+const targets=["20","19","18","17","16","15","14","13","12","D","T","B","H"];
+const marks=["","/","X","⭕"];
+const ring=[20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];
+
+let scores,turn="player",snapshot,botLevel=5,matchScore=[0,0],bestOf=1;
+let botMemory = null;
+
+/* === GAME START === */
+function startGame(){
+  botLevel=parseInt(document.getElementById("botLevel").value);
+  document.getElementById("levelInfo").textContent=`🤖 Dart Bot Level: ${botLevel}`;
+  scores=[Array(13).fill(0),Array(13).fill(0)];
+  turn=Math.random()<0.5?"player":"bot";
+  snapshot=JSON.parse(JSON.stringify(scores));
+  show("game");
+  render();
+  updateTurn();
+  if(turn==="bot") botTurn();
+}
+
+function restart(){ show("start"); }
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+/* === RENDER BOARD === */
+function render(){
+  board.innerHTML="";
+  targets.forEach((t,i)=>{
+    let r=document.createElement("div");r.className="row";
+    let l=document.createElement("div");l.className="cell";
+    l.textContent=marks[scores[0][i]];
+    l.onclick=()=>{
+      if(turn!=="player")return;
+      snapshot=JSON.parse(JSON.stringify(scores));
+      scores[0][i]=Math.min(3,scores[0][i]+1);
+      render();checkWin();
+    };
+    let m=document.createElement("div");m.className="cell mid";m.textContent=t;
+    let rt=document.createElement("div");rt.className="cell";
+    rt.textContent=marks[scores[1][i]];
+    r.append(l,m,rt);board.appendChild(r);
+  });
+}
+
+function updateTurn(){
+  turnInfo.textContent=turn==="player"?"Senin Atışın":"Dart Bot Atıyor";
+}
+
+/* === UNDO ACTION === */
+function undo(){
+  if(turn!=="player")return;
+  scores=JSON.parse(JSON.stringify(snapshot));
+  render();
+}
+
+/* === PLAYER END === */
+function endPlayer(){
+  snapshot=JSON.parse(JSON.stringify(scores));
+  turn="bot";
+  updateTurn();
+  botTurn();
+}
+
+/* === BOT AI === */
+function levelAcc(){
+  const table={
+    1:{hit:30, n1:28, n2:23, rnd:18, bull:1},
+    2:{hit:35, n1:29, n2:20, rnd:15, bull:1},
+    3:{hit:40, n1:30, n2:18, rnd:11, bull:1},
+    4:{hit:45, n1:32, n2:15, rnd:7,  bull:1},
+    5:{hit:50, n1:30, n2:14, rnd:5,  bull:1},
+    6:{hit:55, n1:27, n2:12, rnd:5,  bull:1},
+    7:{hit:55, n1:28, n2:12, rnd:4,  bull:1},
+    8:{hit:60, n1:26, n2:10, rnd:3,  bull:1},
+    9:{hit:65, n1:24, n2:8,  rnd:2,  bull:1},
+    10:{hit:70,n1:22, n2:6,  rnd:1,  bull:1},
+    11:{hit:83,n1:12, n2:3,  rnd:1,  bull:1} // İnsanüstü
+  };
+  return table[botLevel];
+}
+
+
+function nextTarget(){
+  for(let i=0;i<=8;i++) if(scores[1][i]<3) return parseInt(targets[i]);
+  if(scores[1][10]<3) return "T";
+  if(scores[1][9]<3) return "D";
+  if(scores[1][12]<3) return "H";
+  if(scores[1][11]<3) return "B";
+  return null;
+}
+
+function fallbackTarget(){
+  // 1️⃣ X olan sayı
+  for(let i=0;i<=8;i++) if(scores[1][i]===2) return parseInt(targets[i]);
+  // 2️⃣ / olan sayı
+  for(let i=0;i<=8;i++) if(scores[1][i]===1) return parseInt(targets[i]);
+  // 3️⃣ ana hedef
+  return nextTarget();
+}
+
+function botTurn(){
+botMemory = {
+  firstHit: null,      // 1. okun gittiği yer
+  houseTry: scores[1][12] < 3  // House açık mı?
+};
+  popup.style.display="flex";
+  popupContent.innerHTML="<h3>Dart Bot Atıyor</h3>";
+  let throws=[],i=0;
+  let iv=setInterval(()=>{
+    let t=botThrow();
+    throws.push(t);
+    popupContent.innerHTML+=`<div class="throw">${i+1}. Ok: ${t.text}</div>`;
+    i++;
+    if(i===3){ clearInterval(iv); setTimeout(()=>botWrite(throws),800); }
+  },900);
+}
+
+function botThrow(){
+  let target = nextTarget();
+
+  if(!botMemory.houseTry){
+    target = fallbackTarget();
+  }
+
+// HOUSE açıksa ve 1. ok atıldıysa
+if(botMemory.houseTry && botMemory.firstHit !== null && scores[1][12] < 3){
+  target = botMemory.firstHit;
+}
+
+
+  const acc = levelAcc(); // {hit,n1,n2,rnd,bull}
+let roll = Math.random() * 100;
+let landed;
+
+// 🎯 HEDEFİ TUTTU MU?
+if (roll <= acc.hit) {
+  landed = target;
+} else {
+  roll -= acc.hit;
+
+  // ↔️ ±1 KOMŞU
+  if (roll <= acc.n1) {
+    let idx = ring.indexOf(target);
+if(idx === -1){
+  landed = target; // sayı değilse komşu hesabı yapma
+}else{
+  let dir = Math.random() < 0.5 ? -1 : 1;
+  landed = ring[(idx + dir + 20) % 20];
+}
+
+  }
+  // ↔️ ±2 KOMŞU
+  else if (roll <= acc.n1 + acc.n2) {
+    let idx = ring.indexOf(target);
+if(idx === -1){
+  landed = target;
+}else{
+  let dir = Math.random() < 0.5 ? -2 : 2;
+  landed = ring[(idx + dir + 20) % 20];
+}
+
+  }
+  // 🎯 BULL
+  else if (roll <= acc.n1 + acc.n2 + acc.bull) {
+    landed = "B";
+  }
+  // ❓ SAÇMA AMA MÜMKÜN
+  else {
+    landed = ring[Math.floor(Math.random() * ring.length)];
+  }
+}
+
+// 🧠 HOUSE HAFIZA GÜNCELLEME
+if(botMemory.houseTry){
+  if(botMemory.firstHit === null){
+    botMemory.firstHit = landed;
+  }else if(landed !== botMemory.firstHit){
+    botMemory.houseTry = false;
+    target = fallbackTarget();
+  }
+}
+
+  if(landed==="B"){
+    let rb=Math.random();
+    return rb<0.16
+      ?{num:"B",bull:2,text:"Redbull"}
+      :{num:"B",bull:1,text:"Bull"};
+
+
+const sdTable={
+  1:{s:92,t:6,d:2},
+  2:{s:90,t:8,d:2},
+  3:{s:88,t:9,d:3},
+  4:{s:86,t:10,d:4},
+  5:{s:84,t:11,d:5},
+  6:{s:82,t:12,d:6},
+  7:{s:80,t:13,d:7},
+  8:{s:78,t:14,d:8},
+  9:{s:76,t:15,d:9},
+  10:{s:74,t:17,d:9},
+  11:{s:60,t:25,d:15} // İnsanüstü
+};
+
+
+  let r=Math.random()*100;
+let rates=sdTable[botLevel];
+let mult=1;
+
+if(r>rates.s && r<=rates.s+rates.t) mult=3;
+else if(r>rates.s+rates.t) mult=2;
+
+
+  return {num:landed,mult,text:`${landed} ${["Single","Double","Triple"][mult-1]}`};
+}
+
+/* === BOT WRITE TO SCOREBOARD === */
+function botWrite(throws){
+  let nums=throws.map(t=>t.num);
+  let same=nums.every(n=>n===nums[0]);
+  let D=9,T=10,B=11,H=12;
+
+  if(same && scores[1][H]<3){
+    scores[1][H]++;
+    popupContent.innerHTML+="<div class='throw'>HOUSE</div>";
+  }else{
+    throws.forEach(t=>{
+      if(t.num==="B"){
+        scores[1][B]=Math.min(3,scores[1][B]+t.bull);return;
+      }
+      let idx=targets.indexOf(String(t.num));
+      if(t.mult===3){
+        if(scores[1][T]<3) scores[1][T]++;
+        else scores[1][idx]=3;
+        return;
+      }
+      if(t.mult===2){
+        if(scores[1][D]<3) scores[1][D]++;
+        else scores[1][idx]=Math.min(3,scores[1][idx]+2);
+        return;
+      }
+      scores[1][idx]=Math.min(3,scores[1][idx]+1);
+    });
+  }
+
+  popup.style.display="none";
+  turn="player"; updateTurn(); render(); checkWin();
+}
+
+/* === CHECK WIN === */
+function checkWin(){
+  let p=scores[0].every(v=>v>=3);
+  let b=scores[1].every(v=>v>=3);
+  if(!p&&!b)return;
+  popup.style.display="flex";
+  popupContent.innerHTML=p
+    ?"<div class='win'>🏆 KAZANDIN</div>"
+    :"<div class='lose'>❌ KAYBETTİN</div>";
+
+  setTimeout(()=>{
+    popup.style.display="none";
+    show("start");
+  },2000);
+}
+</script>
+</body>
+</html>
