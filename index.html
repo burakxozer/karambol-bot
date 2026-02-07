@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Bözer Gaming</title>
+
+<style>
+/* ================= THEMES ================= */
+body.theme-dark{
+  --bg:#0b1220;
+  --panel:#111827;
+  --card:#020617;
+  --accent:#22c55e;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --border:#1f2937;
+  background:radial-gradient(circle at top,#020617,#0b1220);
+}
+body.theme-light{
+  --bg:#f4f6f8;
+  --panel:#ffffff;
+  --card:#ffffff;
+  --accent:#2563eb;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  background:#f4f6f8;
+}
+body.theme-green{
+  --bg:#0b2e1a;
+  --panel:#0f3d25;
+  --card:#134e32;
+  --accent:#22c55e;
+  --text:#e6fffa;
+  --muted:#a7f3d0;
+  --border:#166534;
+  background:radial-gradient(circle at top,#134e32,#0b2e1a);
+}
+body.theme-purple{
+  --bg:#1b102d;
+  --panel:#2a174a;
+  --card:#3b1f6b;
+  --accent:#a855f7;
+  --text:#f5f3ff;
+  --muted:#ddd6fe;
+  --border:#6d28d9;
+  background:radial-gradient(circle at top,#3b1f6b,#1b102d);
+}
+body.theme-steel{
+  --bg:#1a1d21;
+  --panel:#23272e;
+  --card:#2b3038;
+  --accent:#f97316;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --border:#3f3f46;
+  background:radial-gradient(circle at top,#2b3038,#1a1d21);
+}
+body.theme-red{
+  --bg:#2a0b0b;
+  --panel:#3b0f0f;
+  --card:#4c1414;
+  --accent:#ef4444;
+  --text:#fee2e2;
+  --muted:#fecaca;
+  --border:#7f1d1d;
+  background:radial-gradient(circle at top,#4c1414,#2a0b0b);
+}
+body.theme-midnight{
+  --bg:#020617;
+  --panel:#020c2a;
+  --card:#020e3a;
+  --accent:#38bdf8;
+  --text:#e0f2fe;
+  --muted:#7dd3fc;
+  --border:#1e3a8a;
+  background:radial-gradient(circle at top,#020e3a,#020617);
+}
+
+
+/* ================= BASE ================= */
+*{box-sizing:border-box;font-family:system-ui}
+body{margin:0;color:var(--text);-webkit-tap-highlight-color:transparent}
+.app{max-width:1100px;margin:auto;padding:16px}
+h1,h2{text-align:center;margin:10px 0 14px}
+.desc{text-align:center;color:var(--muted);margin-bottom:20px}
+
+/* ================= GRID ================= */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;
+}
+
+/* ================= CARD ================= */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 16px 36px rgba(0,0,0,.45);
+  transition:.2s ease;
+}
+@media (hover:hover){
+  .card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 26px 56px rgba(0,0,0,.65);
+  }
+}
+.card h3{
+  margin:0 0 6px;
+  font-size:20px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.card span{font-size:14px;color:var(--muted)}
+.icon{font-size:24px}
+
+/* ================= FEATURES ================= */
+.features{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.feature{
+  font-size:12px;
+  padding:4px 10px;
+  border-radius:999px;
+  background:var(--panel);
+  border:1px solid var(--border);
+}
+
+/* ================= BUTTON ================= */
+.btn{
+  width:100%;
+  margin-top:14px;
+  padding:14px;
+  font-size:16px;
+  font-weight:700;
+  border:none;
+  border-radius:14px;
+  background:var(--accent);
+  color:#000;
+}
+.btn.gray{background:#334155;color:#fff}
+
+/* ================= CTA VIDEO ================= */
+.video-cta{
+  margin-top:32px;
+  padding:22px;
+  border-radius:20px;
+  border:1px dashed var(--border);
+  background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:10px;
+}
+.video-cta .icon{font-size:36px}
+.video-cta a{
+  text-decoration:none;
+  padding:12px 22px;
+  border-radius:999px;
+  background:var(--accent);
+  color:#000;
+  font-weight:700;
+}
+
+/* ================= VIEW ================= */
+.view{display:none;animation:fade .3s ease}
+.view.active{display:block}
+iframe{
+  width:100%;
+  height:82vh;
+  border:none;
+  border-radius:16px;
+  margin-top:12px;
+}
+@keyframes fade{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+
+/* ================= SETTINGS ================= */
+.settings{
+  position:fixed;
+  bottom:16px;
+  right:16px;
+  z-index:100;
+}
+.settings button{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  border:none;
+  background:#334155;
+  color:#fff;
+  font-size:22px;
+}
+.settings-panel{
+  position:fixed;
+  bottom:84px;
+  right:16px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px;
+  width:260px;
+  display:none;
+}
+.settings-panel.active{display:block}
+.settings-panel label{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr}
+  iframe{height:78vh}
+}
+/* INFO BUTTON */
+.info-btn{
+  margin-left:6px;
+  font-size:14px;
+  cursor:pointer;
+  opacity:.6;
+}
+.info-btn:hover{
+  opacity:1;
+}
+
+/* INFO PANEL */
+.info-panel{
+  display:none;
+  margin-top:12px;
+  padding:12px;
+  border-radius:10px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  font-size:14px;
+}
+
+.info-panel h4{
+  margin:0 0 8px;
+  font-size:15px;
+}
+
+.info-panel ul{
+  padding-left:18px;
+  margin:0 0 10px;
+}
+
+.info-panel li{
+  margin-bottom:4px;
+}
+
+/* CLOSE BUTTON */
+.close-info{
+  width:100%;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  background:var(--accent);
+  color:#000;
+  font-weight:600;
+}
+
+/* INFO MODAL */
+.info-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(4px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.info-modal.active{
+  display:flex;
+}
+
+.info-modal-card{
+  background:var(--card);
+  color:var(--text);
+  border-radius:18px;
+  padding:20px;
+  max-width:520px;
+  width:92%;
+  max-height:80vh;
+  overflow:auto;
+  border:1px solid var(--border);
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
+}
+
+/* MODAL CLOSE (X) */
+.modal-close{
+  position:absolute;
+  top:12px;
+  right:14px;
+  background:transparent;
+  border:none;
+  font-size:20px;
+  color:var(--muted);
+  cursor:pointer;
+}
+.modal-close:hover{
+  color:var(--text);
+}
+.info-modal-card{
+  position:relative;
+}
+
+/* FULLSCREEN GAME MODE */
+.view.game-full{
+  position:fixed;
+  inset:0;
+  padding:0;
+  margin:0;
+  background:var(--bg);
+  z-index:999;
+}
+
+.view.game-full iframe{
+  width:100vw;
+  height:100vh;
+  border-radius:0;
+  margin:0;
+}
+
+.game-close{
+  position:fixed;
+  top:10px;
+  right:12px;
+  z-index:1000;
+  background:rgba(0,0,0,.4);
+  border:none;
+  color:#fff;
+  font-size:22px;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  backdrop-filter:blur(6px);
+}
+
+.rules-btn{
+  margin-left:4px;
+  font-size:14px;
+  cursor:pointer;
+  opacity:.6;
+}
+.rules-btn:hover{
+  opacity:1;
+  color:var(--accent);
+}
+
+.rules-panel{
+  display:none;
+  margin-top:12px;
+  padding:12px;
+  border-radius:10px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  font-size:14px;
+}
+
+.rules-btn{
+  font-size:15px;
+}
+
+
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<!-- HOME -->
+<div id="home" class="view active">
+  <h1>🎮 Bözer Gaming 🎮</h1>
+  <p class="desc">Mini Oyun Platformu</p>
+
+  <div class="grid">
+    <div class="card" onclick="openGame('americano.html','Americano')">
+      <h3>
+  <span class="icon">🧮</span> Americano
+
+<span class="rules-btn" title="Americano Oyun Kuralları"
+        onclick="openRules(event,this)">📜</span>
+
+  <span class="info-btn" onclick="openInfo(event,this)">ⓘ</span>
+</h3>
+
+
+      <span>Puan & Strateji Oyunu</span>
+      <div class="features"><div class="feature">2–5 Oyuncu</div></div>
+      <button class="btn">Oyna</button>
+
+<div class="rules-panel">
+  <h4>Americano Oyun Kuralları</h4>
+
+  <ul>
+    <li>Oyun 2 adet tam deste (52*2=104) ve 2 adet Job ile toplamda 106 kağıtla oynanır.</li>
+<li>Dağıtıcı, 106 kağıdı karıştırıp sol tarafında bulunan oyuncuya desteyi kestirir. Desteyi kesen oyuncu kestiği kısmın en altındaki kağıdı açıp kalan desteyi de açık kağıdın üstüne koyar. Eğer açılan kağıt Job ise kesen oyuncu o tur için alır, dağıtıcı Job kesen oyuncuya normal dağıtması gerekenden 1 kağıt eksik dağıtır.</li>
+<li>Dağıtıcının sağındaki oyuncuya 14, diğer tüm oyunculara 13 kağıt dağıtılır. 14 kağıt dağıtılan oyuncu ilk tur ortadan kağıt çekmez, atarak başlar.</li>
+<li>Atılacak kağıtlar masanın ortasına üst üste atılır. Oyuncular, solundaki oyuncunun attığı her kağıdı alabilir. Aynı zamanda solundaki oyuncunun haricinde diğer oyuncuların attığı kağıtları da öncelik sırasına göre ve ceza 1 kağıt çekmek şartıyla, her turda en fazla 3 kez alabilir.</li>
+<li>Öncelik sırası, kağıt atan kişiden sonra oyun yönündeki kişi öncelik sahibidir, almayacağını söylerse öncelik bir sonraki oyuncuya geçer ve tüm oyuncular arasında bu kuralla devam eder.</li>
+<li>Bir oyuncu ceza çekmemesi durumunda 13, 1 ceza çekerse 15, 2 ceza çekerse 17, 3 ceza çekerse 19 kağıda sahip olabilir. Sıra oyuncuya geldiğinde solundaki oyuncudan veya ortadan kağıt alır, kağıdı atmadığı ve per açıp işlemediği sürece kağıt sayısı çifttir. Kağıdı attıktan sonra kağıt sayısı yine tek sayı kalır. (13,15,17,19)</li>
+
+    <li>Oyunda per açabilmek için öncelikle o elin kuralını uygulamak gerekir. Mevcut kuralı uygulamadan per açılamaz, işlenemez.</li>
+    <li>Seri, küt ve çift olmak üzere 3 farklı per açma şekli vardır. Çift per sadece "Çift" kural elinde, el başında kuralı uygulamak için açılabilir. Diğer hiçbir turda veya çift turu devamında başka çift açılamaz.</li>
+<li>Kağıtların sıralaması: A-2-3-4-5-6-7-8-9-10-J-Q-K </li>
+<li>Seri: ♠️♦️♣️♥️ olmak üzere 4 kağıt türünden herhangi birinde ardışık sıralı perleri temsil eder. Q-K-A veya A-2-3 perleri yapılabilir, K-A-2 peri yapılamaz. Örneğin ♦️5 - ♦️6 - ♦️7 --> 3lü seri için uygundur. </li>
+<li>Küt: ♠️♦️♣️♥️ türlerinin aynı değerdeki kağıtlarının 3 tanesi 3lü küt, 4ünün de tamamlanması 4lü küt anlamına gelir. Örneğin ♠️8 - ♦️8 - ♣️8 --> 3lü küt açmak için uygun bir perdir. </li>
+<li>Çift: Herhangi bir kağıdın aynısı ile oluşturulur. Örneğin ♣️Q - ♣️Q --> 1 adet çift anlamına gelir. Çift eli kuralı için 3 çift açmak gerekir. Bu kural haricinde oyunun hiçbir turunda/elinde çift açılamaz </li>
+<li>Herhangi bir oyuncu tur kuralını uygulamadan işleme yapamaz.</li>
+<li>Her turda oyun dağıtıldığı el, oyun sırası 1 kez daha gelmeden tur kuralını açmak için el uygun olsa dahi per açılamaz. Oyuncuya 2.kez sıra geldiği zaman tur kuralını açabilir. </li>
+<li>Tur kuralının açıldığı sırada başka per açma veya işlek işleme yapılamaz. Tur kuralı uygulandığı zaman sadece kurala uygun per/perler açılabilir. Oyuncu per veya işlek için 1 kez daha sıra gelmesini beklemek zorundadır.</li>
+<li>Oyunda bitiş, tüm kağıtlarını per açarak veya işleyerek masaya indirdikten sonra bitiş kağıdını ortaya atmak şartıyla yapılabilir. Örneğin oyuncunun elinde ♠️8  ♠️9  ♠️10 --> peri kaldı ise bunu masaya koyarak bitemez, mutlaka ortaya bitiş kağıdı atmak zorundadır. </li>
+<li>Oyunda Job harici bir kağıtla bitmek -25 puandır. / veya - ile gösterilir. Çift elinde normal kağıtla bitilirse biten oyuncu -50 puan alır ve diğer oyuncular elinde kalan sayıların toplamının 2 katını yer.</li>
+<li>Job'la bitiş -50 puandır ve diğer oyuncular elinde kalan sayıların toplamının 2 katını yer. X ile gösterilir. Çift elinde Job ile bitilirse XX ile -100 puan alınır ve diğer oyuncular elindeki sayıların toplamının 4 katını yer.</li>
+<li>İşlek kağıt veya Job atmak (eğer bitmiyorsa) +25 puan cezadır.</li>
+<li>Yerde açılan perlerde Job'u başkası tarafından alınan oyuncu +25 puan ceza yer.</li>
+<li>Hatalı el açıp geri toplamak +25 puan cezadır.</li>
+<li>Oyun bittiğinde elde kalan sayılar toplanırken 2-3-4-5-6-7-8-9-10 --> kendi sayısal değerleri olarak sayılır. J-Q-K-A --> 10 puan değerindedir. Job ise 25 puan sayılır.</li>
+<li>Oyuncu son kağıdını atmadan, o elde yaptığı işlekleri/perleri vb. geri alabilir, başka yere işleyebilir.</li>
+<li>Çift elinde yazılan ceza 2 kat yazılır.</li>
+
+<li>Konken: Düz okey gibi tüm kağıtların per oluşturup, bitiş kağıdının ortaya atılmasıyla biter.</li>
+    <li>En düşük toplam puana sahip oyuncu kazanır.</li>
+      </ul>
+</div>
+
+
+<div class="info-panel">
+  <h4>Americano Scoreboard Nasıl Kullanılır?</h4>
+
+  <ul>
+    <li>2-5 kişi ile oynanabilir.</li>
+    <li>Sol sütunda kural eli güncel olarak gösterilir.</li>
+    <li>Bir kural satırında tüm oyunculara puan yazılmadan, altta kalan diğer sütunlar hesaba katılmaz. Mevcut kuraldaki tüm oyuncuların puan hanesi doldurulduğu anda puanlar otomatik olarak toplanıp ara toplama yazılır ve sıra bir alttaki kurala geçer.</li>
+    <li>Oyunda bazı kuralları oynamak istemiyorsanız, o elde oyunculara 0 puan girebilirsiniz. Aksi halde kural eli, oyunculara puan girilmediği için sabit kalır. </li>
+    <li>Bir oyuncuya ceza yazmak için, ceza satırının oyuncuya denkgelen hücresine tıklayarak yazabilirsiniz. Bir oyuncuya en fazla 8 ceza yazılabilecek şekilde tasarlanmıştır. Daha fazla ceza olması durumunda, oyuncuya puan olarak ekleyebilirsiniz. </li>
+<li>Ceza hücreleri 8 cezadan sonra başa döner ve sıfırlanır. Yanlış ceza işlenmesi durumunda tıklayarak en başa dönüp tekrar işleyebilirsiniz.</li>
+    <li>Normal bitişler için "-" veya "/" yazabilirsiniz. Job bitişler için "X" yazabilirsiniz. Çift elinde Job ile bitiş yapılırsa "XX" de yazabilirsiniz. </li>
+    <li>"Joker" eline geçildiği zaman (çift eli tamamen doldurulduktan sonra) ekrana otomatik olarak "Joker Eli için Kura Çek" tuşu gelir. Konken eli dahil olmak üzere tüm kurallar arasında kura çekilir. Kura sonucu sayfanın sol üstünde gösterilir.</li>
+<li>Joker eli doldurulduktan sonra ekranın en altına "Kazanma Şansları" butonu gelir. Bu buton sayesinde, liderle diğer oyuncuların arasındaki puan farklarını ve Konken elinde kazanmak için yapmanız gereken stratejileri öğrenebilirsiniz. </li>
+<li>"Konken" eli için tüm oyuncuların puanları girildikten 3 saniye sonra oyunun sonucu ve sıralama gösterilir.</li>
+
+  </ul>
+</div>
+    </div>
+
+    <div class="card" onclick="openDart()">
+      <h3><span class="icon">🎯</span> Dart</h3>
+      <span>Karambol Kriket Dart Oyunu</span>
+      <div class="features"><div class="feature">Antrenman</div><div class="feature">Turnuva</div><div class="feature">Maç</div></div>
+      <button class="btn">Aç</button>
+    </div>
+
+    <div class="card" onclick="openGame('kura-cek.html','Kura Çek')">
+      <h3>
+  <span class="icon">🎲</span> Kura Çek
+  <span class="info-btn" onclick="openInfo(event,this)">ⓘ</span>
+</h3>
+      <span>Çekiliş, Kura vb.</span>
+      <div class="features"><div class="feature">Çekiliş</div><div class="feature">Grup Kurası</div><div class="feature">Turnuva</div></div>
+      <button class="btn">Aç</button>
+<div class="info-panel">
+  <h4>Kura Çek Nasıl Kullanılır?</h4>
+  <ul>
+    <li>3 moddan oluşur: Çekiliş, Grup Kurası ve Turnuva.</li>
+    <li>"Çekiliş Yap" modunda; katılımcı ve kazanacak kişi sayısı girerek, yazacağınız isimler içerisinden kazananı rastgele belirleyebilirsiniz.</li>
+    <li>"Grup Kurası" modu ile; yazacağınız kişileri, istediğiniz grup sayısına rastgele olarak bölebilirsiniz.</li>
+<li>Turnuva modu ile; Grup Kurası gibi gruplara ayırıp, sonrasında rastgele eşleşmelerle eleme usulü turnuva şampiyonu belirleyebilirsiniz.</li>
+<li>Turnuva Modu'nda 4 veya 8 takımda problem yaşanmaz, takım sayısı tek sayı ise ve BAY geçme durumu söz konusuysa hata verir.</li>
+<li>Turnuva başladıktan sonra maça tıklayarak kazananı seçerek diğer turlara geçiş yapabilirsiniz.</li>  
+</ul>
+</div>
+
+    </div>
+
+    <!-- LİG OLUŞTUR -->
+    <div class="card" onclick="openGame('lig.html','Lig Oluştur')">
+     <h3>
+  <span class="icon">🏟️</span> Lig Oluştur
+  <span class="info-btn" onclick="openInfo(event,this)">ⓘ</span>
+</h3>
+      <span>Lig oluşturma ve yönetim</span>
+      <button class="btn">Aç</button>
+<div class="info-panel">
+  <h4>Lig Oluştur Nasıl Kullanılır?</h4>
+  <ul>
+    <li>İstediğiniz takım sayısında lig oluşturabilirsiniz.</li>
+    <li>"Tek Karşılaşma" , "Çift Karşılaşma" seçenekleriyle oluşan takımların birbiriyle kaç kez karşılaşacağını belirleyin.</li>
+<li>Maça tıklayarak maçın galibini seçin. 
+  1 Fark (2-1); kazanan takım 2 puan alır, kaybeden takım 1 puan alır. 
+  2 Fark (2-0); kazanan takım 3 puan alır, kaybeden takım puan alamaz.</li>
+    <li>Takım sayısı tek sayı ise BAY geçecek takım rastgele belirlenir. BAY geçen takım 1 puan alır. O turdaki bütün maçlar girildikten sonra puan durumuna yazılır.</li>
+  
+</ul>
+</div>
+
+    </div>
+    <div class="card" onclick="openGame('somali.html','Somali')">
+      <h3>
+  <span class="icon">🎴</span> Somali
+  <span class="info-btn" onclick="openInfo(event,this)">ⓘ</span>
+</h3>
+      <span>Okey Tabanlı Bahis Oyunu</span>
+      <div class="features"><div class="feature">Tekli</div><div class="feature">Eşli</div></div>
+      <button class="btn">Oyna</button>
+<div class="info-panel">
+  <h4>Somali Scoreboard Nasıl Kullanılır?</h4>
+  <ul>
+    <li>İsim yazma ekranında takımları karıştır tuşu ile rastgele masa yerleşimi yapabilirsiniz.</li>
+    <li>Başlangıç sayısı ekranından, kaç puandan düşüleceğini girin. (Genellikle 10'dan düşülür)</li>
+    <li>Bahis ekranında gireceğiniz miktarla, sayısı kaçtan hesaplanacağını belirleyin.</li>
+<li>Oyun başladıktan sonra "İşlem Yap" tuşu ile düz bitiş, okey bitiş veya gösterge için veri girin.</li>
+<li>Oyunda her tur kaydedilir ve "Güncel Durum" butonu sayesinde turlar ve genel toplama ulaşılabilir.</li>
+  </ul>
+</div>
+
+
+    </div>
+
+  </div>
+
+  <div id="continue" class="grid" style="margin-top:24px"></div>
+</div>
+
+<!-- DART -->
+<div id="dart" class="view">
+  <h2>🎯 Dart Modları</h2>
+  <p class="desc">Tüm dart oyunları tek yerde</p>
+
+  <div class="grid">
+    <div class="card" onclick="openGame('dart/dartbot-v1.html','Dartbot v1')">
+      <h3><span class="icon">🤖</span> Dartbot v1
+<span class="info-btn" onclick="openInfo(event, this)">ⓘ</span>
+</h3>
+      <span>Bota karşı Karambol Kriket</span>
+      <div class="features"><div class="feature">Karambol Kriket</div><div class="feature">1–10 LvL Bot</div></div>
+<div class="info-panel">
+  <h4>Dartbot Nasıl Oynanır?</h4>
+
+  <ul>
+    <li>Karambol Kriket oyun kuralları geçerlidir.</li>
+<li>11 farklı seviye bottan oluşur. Bot seviyesi arttıkça zorluk artar.</li>
+<li>Botun temel hedefi house atmak, sonrasında da kalan kuralları tamamlamaktır.</li>
+    <li>Kuralları bilmiyorsanız dart modu içinde en altta Youtube videosuna girerek öğrenebilirsiniz.</li>
+      </ul>
+
+</div>
+
+      <button class="btn">Başla</button>
+    </div>
+
+
+    <div class="card" onclick="openGame('dart/dart-turnuva.html','Dart Turnuva')">
+      <h3><span class="icon">🏆</span> Turnuva</h3>
+      <span>Eleme sistemi</span>
+      <div class="features">
+        <div class="feature">Karambol Kriket</div>
+        <div class="feature">Max 8 Takım</div>
+        <div class="feature">Otomatik Eşleşme</div>
+      </div>
+      <button class="btn">Başla</button>
+    </div>
+
+    <div class="card" onclick="openGame('dart/dart-mac.html','Dart Maç')">
+      <h3><span class="icon">⚔️</span> Dart Maç</h3>
+      <span>Hızlı skor takibi</span>
+      <div class="features">
+        <div class="feature">Karambol Kriket</div>
+        <div class="feature">Max 4 Takım</div>
+        <div class="feature">Tek Maç</div>
+      </div>
+      <button class="btn">Başla</button>
+    </div>
+  </div>
+
+  <div class="video-cta">
+    <div class="icon">📺</div>
+    <strong>Karambol Kriket Nasıl Oynanır?</strong>
+    <span>Kuralları öğren, daha hızlı başla</span>
+    <a href="https://www.youtube.com/watch?v=mSMOEP9QWJk" target="_blank">
+      YouTube’da İzle ▶
+    </a>
+  </div>
+
+  <button class="btn gray" onclick="goHome()">⬅ Ana Menü</button>
+</div>
+
+<!-- GAME -->
+<div id="game" class="view">
+  <button class="game-close" onclick="goHome()">✕</button>
+  <iframe id="frame"></iframe>
+</div>
+
+<!-- SETTINGS -->
+<div class="settings">
+  <button onclick="toggleSettings()">⚙️</button>
+</div>
+
+<div id="settingsPanel" class="settings-panel">
+  <label>
+    Devam Et
+    <input type="checkbox" id="continueToggle">
+  </label>
+
+  <label>
+    Tema
+    <select id="themeSelect">
+      <option value="dark">Dark</option>
+      <option value="light">Light</option>
+      <option value="green">Card Table Green</option>
+      <option value="purple">Casino Purple</option>
+      <option value="steel">Steel / Graphite</option>
+      <option value="red">Red Arena</option>
+      <option value="midnight">Midnight Blue</option>
+    </select>
+  </label>
+
+  <button class="btn gray" onclick="closeOpenGames()">Açık Oyunları Kapat</button>
+</div>
+
+</div>
+
+<script>
+const views=document.querySelectorAll('.view');
+const cont=document.getElementById("continue");
+const toggle=document.getElementById("continueToggle");
+const themeSelect=document.getElementById("themeSelect");
+
+function show(id){
+  views.forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function openInfo(e, el){
+  e.stopPropagation();
+
+  const card = el.closest(".card");
+  const panel = card.querySelector(".info-panel");
+
+  document.getElementById("infoModalContent").innerHTML = panel.innerHTML;
+  document.getElementById("infoModal").classList.add("active");
+}
+
+function closeInfo(){
+  document.getElementById("infoModal").classList.remove("active");
+}
+
+
+function openGame(src,name){
+  localStorage.setItem("lastGame",JSON.stringify({src,name}));
+  frame.src = src;
+
+  show('game');
+  document.getElementById("game").classList.add("game-full");
+
+  renderContinue();
+}
+
+function openDart(){show('dart')}
+function goHome(){
+  frame.src="";
+  document.getElementById("game").classList.remove("game-full");
+  show('home');
+  renderContinue();
+}
+
+/* CONTINUE */
+function renderContinue(){
+  cont.innerHTML="";
+  if(localStorage.getItem("continueEnabled")!=="true") return;
+  const last=JSON.parse(localStorage.getItem("lastGame"));
+  if(!last) return;
+  cont.innerHTML=`
+    <div class="card" onclick="openGame('${last.src}','${last.name}')">
+      <h3><span class="icon">▶️</span> Devam Et</h3>
+      <span>${last.name}</span>
+      <button class="btn">Devam</button>
+    </div>`;
+}
+
+/* SETTINGS */
+function toggleSettings(){
+  document.getElementById("settingsPanel").classList.toggle("active");
+}
+toggle.checked = localStorage.getItem("continueEnabled")==="true";
+toggle.onchange = ()=>{
+  localStorage.setItem("continueEnabled",toggle.checked);
+  renderContinue();
+};
+
+/* THEME */
+const savedTheme = localStorage.getItem("theme") || "steel";
+document.body.className = "theme-" + savedTheme;
+themeSelect.value = savedTheme;
+themeSelect.onchange = ()=>{
+  localStorage.setItem("theme",themeSelect.value);
+  document.body.className = "theme-" + themeSelect.value;
+};
+
+function closeOpenGames(){
+  localStorage.removeItem("lastGame");
+  renderContinue();
+}
+renderContinue();
+
+function openRules(e, el){
+  e.stopPropagation();
+
+  const card = el.closest(".card");
+  const panel = card.querySelector(".rules-panel");
+
+  document.getElementById("infoModalContent").innerHTML = panel.innerHTML;
+  document.getElementById("infoModal").classList.add("active");
+}
+
+document.addEventListener("touchstart", function(e){
+  const modal = document.getElementById("infoModal");
+  if(!modal.classList.contains("active")) return;
+
+  if(!e.target.closest(".info-modal-card")){
+    closeInfo();
+  }
+});
+
+let modalTouchStartY = 0;
+let modalTouchMoved = false;
+
+const infoModal = document.getElementById("infoModal");
+
+infoModal.addEventListener("touchstart", e => {
+  modalTouchStartY = e.touches[0].clientY;
+  modalTouchMoved = false;
+});
+
+infoModal.addEventListener("touchmove", e => {
+  const diff = Math.abs(e.touches[0].clientY - modalTouchStartY);
+  if(diff > 10){
+    modalTouchMoved = true;
+  }
+});
+
+infoModal.addEventListener("touchend", e => {
+  if(!modalTouchMoved && !e.target.closest(".info-modal-card")){
+    closeInfo();
+  }
+});
+
+
+</script>
+
+<div id="infoModal" class="info-modal"
+     onclick="closeInfo()"
+
+  <div class="info-modal-card" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeInfo()">✕</button>
+    <div id="infoModalContent"></div>
+  </div>
+</div>
+
+
+
+</body>
+</html>
+
