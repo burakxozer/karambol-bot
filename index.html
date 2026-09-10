@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eşli Dost Kazığı</title>
+<style>
+:root{
+  --felt:#0d392d; --felt2:#082a22; --gold:#d9b45a; --gold2:#f5dc88;
+  --ink:#17202a; --panel:rgba(8,19,25,.84); --line:rgba(255,255,255,.13);
+  --good:#54e09a; --bad:#ff6b72; --blue:#68a9ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#071714;color:#fff}
+button,input{font:inherit}
+button{cursor:pointer}
+#app{width:100%;height:100%;position:relative;overflow:hidden}
+#landscapeNotice{display:none;position:fixed;inset:0;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 50% 35%,rgba(43,126,94,.25),transparent 38%),#071714;color:#f4df96;z-index:999}.rotate-icon{font-size:52px;margin-bottom:12px}.rotate-copy{color:#b6c7c1;font-size:14px;line-height:1.55}
+.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.hidden{display:none!important}
+#startScreen{background:
+ radial-gradient(circle at 50% 35%,rgba(43,126,94,.22),transparent 38%),
+ radial-gradient(circle at 15% 80%,rgba(217,180,90,.10),transparent 30%),
+ linear-gradient(135deg,#06110f,#0b2821 48%,#071714)}
+.start-card{width:min(760px,94vw);padding:38px;border:1px solid rgba(217,180,90,.35);border-radius:28px;
+ background:linear-gradient(145deg,rgba(20,39,37,.95),rgba(5,17,16,.94));
+ box-shadow:0 30px 100px rgba(0,0,0,.6),inset 0 1px rgba(255,255,255,.08)}
+.logo{font-weight:900;letter-spacing:.02em;text-align:center;font-size:clamp(38px,7vw,72px);
+ background:linear-gradient(#fff,#d8bd72);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{text-align:center;color:#aebdb8;margin:8px 0 32px;font-size:14px}
+.settings{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.setting{padding:18px;border-radius:18px;background:rgba(255,255,255,.045);border:1px solid var(--line)}
+.setting label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#9aada7;margin-bottom:12px}
+.choice-row{display:flex;gap:8px;flex-wrap:wrap}
+.choice{flex:1;min-width:85px;padding:12px 10px;border-radius:12px;border:1px solid var(--line);background:#10251f;color:#d9e5e1}
+.choice.active{border-color:var(--gold);background:linear-gradient(145deg,#3b3420,#1c281f);color:#fff;box-shadow:0 0 0 1px rgba(217,180,90,.22),0 8px 25px rgba(217,180,90,.12)}
+#startBtn{width:100%;margin-top:24px;padding:17px;border:0;border-radius:15px;color:#17150c;font-weight:900;
+ background:linear-gradient(135deg,#f1d37c,#b98b32);box-shadow:0 10px 30px rgba(217,180,90,.22)}
+#startBtn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.help{margin-top:15px;text-align:center;color:#778983;font-size:12px}
+
+#game{background:
+ radial-gradient(ellipse at center,rgba(30,112,79,.28),transparent 48%),
+ radial-gradient(ellipse at center,transparent 25%,rgba(0,0,0,.35) 100%),
+ linear-gradient(135deg,var(--felt2),var(--felt));
+}
+#game:before{content:"";position:absolute;inset:3%;border:1px solid rgba(217,180,90,.18);border-radius:38px;pointer-events:none;box-shadow:inset 0 0 80px rgba(0,0,0,.25)}
+.topbar{position:absolute;left:18px;right:18px;top:14px;height:54px;display:flex;align-items:center;justify-content:space-between;z-index:30}
+.brand-mini{font-weight:900;color:#f4df96;letter-spacing:.04em}
+.top-actions{display:flex;gap:8px}
+.icon-btn{border:1px solid var(--line);background:rgba(8,19,25,.72);color:#fff;border-radius:12px;padding:9px 12px;backdrop-filter:blur(10px)}
+.icon-btn:hover{border-color:rgba(217,180,90,.6)}
+
+#table{position:absolute;inset:74px 0 196px}
+.seat{position:absolute;width:300px;min-height:142px;z-index:12}
+.seat .seat-card{border:1px solid rgba(255,255,255,.12);background:rgba(4,16,15,.62);backdrop-filter:blur(8px);
+ border-radius:17px;padding:9px;box-shadow:0 14px 35px rgba(0,0,0,.22);transition:.25s}
+.seat.active{z-index:24}.seat.active .seat-card{border-color:#ffe49a;background:linear-gradient(145deg,rgba(37,68,51,.96),rgba(9,28,24,.94));box-shadow:0 0 0 2px rgba(255,228,154,.7),0 0 28px rgba(249,206,100,.48),0 0 70px rgba(249,206,100,.22);animation:turnGlow 1.1s ease-in-out infinite alternate}.turn-beacon{display:none;margin:-2px 0 5px;padding:3px 6px;border-radius:6px;background:linear-gradient(90deg,#f6d977,#bf8330);color:#17150c;font-size:8px;font-weight:950;letter-spacing:.08em;text-align:center}.seat.active .turn-beacon{display:block}@keyframes turnGlow{to{box-shadow:0 0 0 3px rgba(255,228,154,.9),0 0 44px rgba(249,206,100,.7),0 0 90px rgba(249,206,100,.3)}}
+.seat.active-target .seat-card,.center-stack.active-target,.start-pile.active-target{outline:2px solid var(--gold);outline-offset:4px;filter:drop-shadow(0 0 9px rgba(217,180,90,.55))}
+.seat.you .seat-card{background:rgba(9,28,24,.82)}
+.seat-name{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px}
+.badges{display:flex;gap:5px;align-items:center}
+.badge{font-size:9px;padding:3px 6px;border-radius:99px;background:rgba(255,255,255,.08);color:#b8c7c2}
+.team-dot{width:9px;height:9px;border-radius:50%;display:inline-block;box-shadow:0 0 10px currentColor}
+.hand-count{color:#9bb0aa;font-size:11px}
+.partner-line{font-size:9px;color:#7f9690;margin-top:2px}
+.groups{display:flex;gap:7px;align-items:flex-end;min-height:76px;margin-top:9px;overflow:visible;padding:0 2px 2px}
+.group{position:relative;width:58px;height:74px;flex:0 0 auto;transition:.2s}
+.group .mini-card{position:absolute;inset:0;border-radius:6px;background:linear-gradient(145deg,#fff,#dfe5e6);border:1px solid rgba(0,0,0,.2);box-shadow:0 3px 8px rgba(0,0,0,.25);overflow:hidden;color:#111}
+.group:not(:last-child) .mini-card{height:31px;top:43px}
+.group.active-target{filter:drop-shadow(0 0 8px var(--gold));transform:translateY(-2px)}
+.mini-card .rank{font-weight:900;font-size:17px;padding:5px 6px}.mini-card .suit{font-size:15px;padding-left:6px}
+.group.red .mini-card{color:#bd1f31}
+.group.job .mini-card{background:linear-gradient(145deg,#f8e4a2,#b88729);color:#1a160b}
+.count{position:absolute;right:-7px;top:-8px;z-index:5;background:#101a18;border:1px solid rgba(255,255,255,.25);color:#fff;font-weight:900;font-size:10px;padding:3px 6px;border-radius:99px}
+.group:last-child .mini-card{height:74px}
+.group:last-child .count{top:-8px}
+.group.job .hand-job{font-size:13px;line-height:1;margin:7px 0 2px;text-align:center;letter-spacing:-.04em}.group.job:not(:last-child) .hand-job{font-size:10px;margin:4px 0 0}.group.job .mini-card>div:last-child{font-size:13px!important}.group-overflow{height:25px;align-self:flex-end;padding:5px 7px;border:1px dashed rgba(244,223,150,.5);border-radius:8px;color:#f4df96;font-weight:800;font-size:10px;white-space:nowrap;background:rgba(7,23,20,.42)}
+.opponent-hand{height:16px;margin-top:5px;display:flex;align-items:center}.card-backs{display:flex;align-items:center;padding-left:3px}.card-back{width:15px;height:21px;margin-left:-7px;border-radius:3px;border:1px solid rgba(246,222,135,.65);background:repeating-linear-gradient(45deg,#244d63 0 3px,#183949 3px 6px);box-shadow:0 2px 4px rgba(0,0,0,.35)}.opponent-hand .hand-count{margin-left:7px;color:#d2e0da;font-size:9px;font-weight:800}
+
+.seat.s0{left:50%;bottom:2%;transform:translateX(-50%)}
+.seat.s1{right:2%;top:50%;transform:translateY(-50%)}
+.seat.s2{left:50%;top:2%;transform:translateX(-50%)}
+.seat.s3{left:2%;top:50%;transform:translateY(-50%)}
+.seat.s4{right:3%;top:17%}
+.seat.s5{left:3%;top:17%}
+.seat.s6{left:3%;bottom:10%}
+.seat.s7{right:3%;bottom:10%}
+#game.players6 .seat.s0{left:50%;bottom:2%;transform:translateX(-50%)}
+#game.players6 .seat.s1{right:3%;bottom:7%}
+#game.players6 .seat.s2{right:3%;top:28%}
+#game.players6 .seat.s3{left:50%;top:2%;transform:translateX(-50%)}
+#game.players6 .seat.s4{left:3%;top:28%}
+#game.players6 .seat.s5{left:3%;bottom:7%}
+#game.players8 .seat{width:285px}
+#game.players8 .seat.s0{left:50%;bottom:1%;transform:translateX(-50%)}
+#game.players8 .seat.s1{right:2%;bottom:10%}
+#game.players8 .seat.s2{right:1%;top:50%;transform:translateY(-50%)}
+#game.players8 .seat.s3{right:2%;top:13%}
+#game.players8 .seat.s4{left:50%;top:1%;transform:translateX(-50%)}
+#game.players8 .seat.s5{left:2%;top:13%}
+#game.players8 .seat.s6{left:1%;top:50%;transform:translateY(-50%)}
+#game.players8 .seat.s7{left:2%;bottom:10%}
+
+.center-area{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(370px,38vw);height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:26}
+.zone-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#78938b;margin:2px 0 5px}
+.direction{display:none}
+.center-stack{height:90px;min-width:130px;display:flex;align-items:center;justify-content:center;position:relative}
+.center-card{position:absolute;width:62px;height:88px;border-radius:9px;background:linear-gradient(145deg,#fff,#dfe5e6);color:#111;border:1px solid rgba(0,0,0,.25);box-shadow:0 12px 25px rgba(0,0,0,.35);transition:.25s;overflow:hidden}
+.center-card.red{color:#b51e30}
+.center-card .rank{font-size:20px;font-weight:900;padding:6px}
+.center-card .suit{font-size:18px;padding-left:6px}
+.center-card.job{background:linear-gradient(145deg,#f8e4a2,#b88729);color:#19150b}
+.center-card:nth-last-child(1){transform:translate(0,0) rotate(-2deg)}
+.center-card:nth-last-child(2){transform:translate(-18px,3px) rotate(4deg);opacity:.72}
+.center-card:nth-last-child(3){transform:translate(18px,2px) rotate(-7deg);opacity:.48}
+.center-card:nth-last-child(4){transform:translate(-30px,5px) rotate(8deg);opacity:.3}
+.center-empty{width:92px;height:118px;border:1px dashed rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#61766f;font-size:10px;text-transform:uppercase;letter-spacing:.12em}
+.start-pile{display:flex;gap:8px;align-items:flex-end;justify-content:center;margin-top:8px;min-height:62px}
+.start-group{position:relative;width:46px;height:60px}
+.start-group .mini-card{position:absolute;inset:0;border-radius:7px;background:linear-gradient(145deg,#fff,#dfe5e6);color:#111;border:1px solid rgba(0,0,0,.2);box-shadow:0 4px 10px rgba(0,0,0,.22)}
+.start-group.red .mini-card{color:#b51e30}
+.start-group.job .mini-card{background:linear-gradient(145deg,#f8e4a2,#b88729);color:#19150b}
+.start-group .rank{font-size:13px;font-weight:900;padding:4px}
+.start-group .suit{padding-left:4px}
+.start-group .count{top:-8px;right:-8px}
+
+.turn-info{position:absolute;left:50%;top:calc(50% + 128px);transform:translateX(-50%);font-size:11px;color:#a8bab5;white-space:nowrap}
+#timerPill{position:absolute;left:50%;top:calc(50% + 148px);transform:translateX(-50%);padding:6px 12px;border-radius:99px;background:rgba(4,13,12,.72);border:1px solid var(--line);font-weight:900;font-size:12px;z-index:20}
+#timerPill.urgent{color:#ff777e;border-color:#ff777e;animation:pulse .55s infinite alternate}
+@keyframes pulse{to{box-shadow:0 0 18px rgba(255,107,114,.35)}}
+
+#handArea{position:absolute;left:0;right:0;bottom:0;height:198px;z-index:25;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
+#hand{display:flex;align-items:flex-end;justify-content:center;height:180px;pointer-events:auto;max-width:96vw;padding:0 15px}
+.hand-card{width:108px;height:156px;border-radius:13px;background:linear-gradient(145deg,#fff,#dce2e4);color:#101417;border:1px solid rgba(0,0,0,.25);
+ box-shadow:0 12px 24px rgba(0,0,0,.35);position:relative;margin-left:-20px;transition:transform .16s,margin .16s,filter .16s;user-select:none;touch-action:none;cursor:grab}
+.hand-card:first-child{margin-left:0}
+.hand-card:hover{transform:translateY(-14px) rotate(0deg)!important;z-index:40}
+.hand-card.selected{transform:translateY(-20px);z-index:45;box-shadow:0 0 0 2px var(--gold),0 18px 35px rgba(0,0,0,.4)}
+.hand-card.dragging{cursor:grabbing;z-index:100;filter:drop-shadow(0 20px 25px rgba(0,0,0,.45));transform:scale(1.08) rotate(0)!important}
+.hand-card.red{color:#b51e30}
+.hand-card.job{background:linear-gradient(145deg,#f8e4a2,#b88729);color:#19150b}
+.hand-rank{font-size:30px;font-weight:950;padding:10px}.hand-suit{font-size:32px;padding-left:10px}
+.hand-job{font-size:21px;font-weight:950;text-align:center;margin-top:18px}
+.drag-hint{position:absolute;bottom:8px;font-size:10px;color:#748883;opacity:.85}
+.fly-card{position:fixed;width:56px;height:80px;border-radius:8px;background:linear-gradient(145deg,#fff,#dfe5e6);border:1px solid rgba(0,0,0,.24);color:#121719;z-index:150;pointer-events:none;box-shadow:0 15px 30px rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:flex-start;transition:transform .34s cubic-bezier(.2,.8,.25,1),opacity .12s linear}
+.fly-card.red{color:#b51e30}.fly-card.job{background:linear-gradient(145deg,#f8e4a2,#b88729);color:#19150b}.fly-card .rank{font-size:18px;font-weight:900;padding:6px}.fly-card .suit{font-size:16px;padding-left:6px}.seat-card.group-landed{animation:land .42s ease-out}.center-stack.card-revealed{animation:reveal .34s ease-out}@keyframes land{45%{transform:scale(1.035);filter:brightness(1.25)}100%{transform:scale(1)}}@keyframes reveal{45%{transform:scale(1.06)}100%{transform:scale(1)}}
+.group-flight{position:fixed;width:60px;height:78px;border-radius:9px;background:linear-gradient(145deg,#fff,#dfe5e6);border:1px solid rgba(0,0,0,.25);color:#121719;z-index:151;pointer-events:none;box-shadow:0 16px 32px rgba(0,0,0,.45);transition:transform .58s cubic-bezier(.18,.82,.2,1),opacity .16s linear}.group-flight:before{content:"";position:absolute;inset:4px -6px -4px 6px;border-radius:8px;background:inherit;border:inherit;z-index:-1;opacity:.65;transform:rotate(5deg)}.group-flight.job{background:linear-gradient(145deg,#f8e4a2,#b88729)}.group-flight .rank{font-size:20px;font-weight:950;padding:7px}.group-flight .suit{font-size:15px;padding-left:7px}.group-flight .qty{position:absolute;right:-9px;top:-9px;background:#10221e;color:#fff;border:2px solid #f4df96;border-radius:99px;padding:3px 6px;font-size:11px;font-weight:950}.group-flight .job-title{text-align:center;font-weight:950;margin-top:13px;font-size:15px}.seat-card.group-source{animation:groupOut .34s ease-out}@keyframes groupOut{50%{filter:brightness(1.55);transform:scale(.97)}100%{filter:brightness(1);transform:scale(1)}}
+
+.overlay{position:absolute;inset:0;background:rgba(1,7,6,.72);backdrop-filter:blur(8px);z-index:80;display:flex;align-items:center;justify-content:center}
+.modal{width:min(700px,92vw);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#122923,#081713);border:1px solid rgba(217,180,90,.3);border-radius:22px;padding:24px;box-shadow:0 35px 100px rgba(0,0,0,.65)}
+.modal h2{margin:0 0 14px;color:#f1d78b}
+.close-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.close{border:0;background:rgba(255,255,255,.08);color:#fff;border-radius:10px;padding:8px 11px}
+.score-table{width:100%;border-collapse:collapse}
+.score-table th,.score-table td{padding:9px 7px;border-bottom:1px solid rgba(255,255,255,.08);text-align:right}
+.score-table th:first-child,.score-table td:first-child{text-align:left}
+.score-table .winner{color:#f3d57c;font-weight:900}
+.round-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.summary-card{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:14px;padding:12px}
+.summary-card strong{display:block;color:#f1d78b;margin-bottom:6px}
+.summary-card div{font-size:12px;color:#b9c8c3;line-height:1.7}
+.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}
+.gold-btn{border:0;background:linear-gradient(135deg,#f1d37c,#b98b32);color:#19150b;font-weight:900;border-radius:11px;padding:11px 16px}
+.secondary-btn{border:1px solid var(--line);background:#10221e;color:#fff;border-radius:11px;padding:11px 16px}
+
+#targetChooser{z-index:90}
+.target-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px}
+.target-btn{text-align:left;padding:12px;border-radius:13px;border:1px solid var(--line);background:#10221e;color:#fff}
+.target-btn:hover{border-color:var(--gold);background:#1a2d26}
+.target-btn small{display:block;color:#8ea39d;margin-top:3px}
+
+#toast{position:absolute;left:50%;top:78px;transform:translateX(-50%) translateY(-10px);z-index:120;background:rgba(5,15,13,.94);
+border:1px solid rgba(217,180,90,.35);padding:10px 15px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;color:#f4e3aa;font-weight:700;font-size:12px}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+#endScreen{background:radial-gradient(circle at 50% 35%,rgba(217,180,90,.16),transparent 45%),rgba(3,9,8,.97);z-index:200}
+.end-card{text-align:center;width:min(680px,92vw);padding:34px;border-radius:26px;border:1px solid rgba(217,180,90,.35);background:linear-gradient(145deg,#132b25,#081714);box-shadow:0 40px 100px rgba(0,0,0,.65)}
+.trophy{font-size:54px}
+.end-title{font-size:40px;font-weight:950;color:#f2d77f}
+.end-score{font-size:15px;color:#b9c8c2;margin:8px 0 22px}
+.final-list{display:grid;gap:8px;text-align:left}
+.final-team{display:flex;justify-content:space-between;padding:13px 15px;border-radius:12px;background:rgba(255,255,255,.045);border:1px solid var(--line)}
+.final-team.win{border-color:rgba(217,180,90,.5);color:#f5dc88}
+
+@media (max-height:560px) and (orientation:landscape), (max-width:900px) and (orientation:landscape){
+ .topbar{top:7px;left:9px;right:9px;height:38px}.icon-btn{padding:6px 8px;font-size:11px}.brand-mini{font-size:12px}
+ #table{inset:46px 0 99px}.seat{width:142px;min-height:57px}.seat .seat-card{padding:6px;border-radius:11px}.seat-name{font-size:10px}.partner-line{font-size:7px}.badge{font-size:7px;padding:2px 4px}.hand-count{font-size:8px}
+ .groups{min-height:38px;margin-top:3px;gap:1px}.group{width:25px;height:38px}.group .mini-card{border-radius:4px}.group:not(:last-child) .mini-card{height:17px;top:21px}.group:last-child .mini-card{height:38px}.mini-card .rank{font-size:10px;padding:2px}.mini-card .suit{font-size:8px;padding-left:2px}.count{font-size:7px;padding:2px 4px;right:-5px;top:-7px}.group-overflow{width:18px;height:18px;padding:2px;font-size:0}.group-overflow:after{content:"•••";font-size:8px;letter-spacing:-1px}
+ #game.players6 .seat,#game.players8 .seat{width:118px}.center-area{width:210px;height:150px;top:49%}.direction{font-size:7px;margin-bottom:3px}.center-stack{height:56px}.center-card{width:40px;height:57px;border-radius:6px}.center-card .rank{font-size:14px;padding:4px}.center-card .suit{font-size:12px;padding-left:4px}.center-empty{width:68px;height:62px;font-size:7px}.start-pile{gap:3px;min-height:38px;margin-top:2px}.start-group{width:29px;height:37px}.start-group .rank{font-size:9px;padding:2px}.start-group .suit{font-size:8px;padding-left:2px}
+ .turn-info{top:calc(49% + 80px);font-size:8px}.zone-label{font-size:7px;margin:0}.center-card:nth-last-child(2){transform:translate(-10px,2px) rotate(4deg)}.center-card:nth-last-child(3){transform:translate(10px,2px) rotate(-7deg)}
+ #timerPill{top:calc(49% + 94px);font-size:9px;padding:3px 7px}#handArea{height:92px}.drag-hint{display:none}#hand{height:87px}.hand-card{width:45px;height:65px;border-radius:7px;margin-left:-11px}.hand-rank{font-size:14px;padding:4px}.hand-suit{font-size:15px;padding-left:4px}.hand-job{font-size:12px;margin-top:8px}
+}
+@media (max-width:620px) and (orientation:landscape){
+ .seat{width:112px}.seat.s1,.seat.s3{display:block}#game.players6 .seat,#game.players8 .seat{width:96px}.partner-line{display:none}.seat-name{font-size:8px}.groups{gap:0;transform:scale(.82);transform-origin:left bottom}.group{width:22px}.group-overflow{width:14px}.top-actions{gap:4px}.icon-btn{font-size:9px;padding:5px}.brand-mini{font-size:10px}
+}
+@media (orientation:portrait) and (max-width:900px){#app{display:none}#landscapeNotice{display:flex}}
+</style>
+</head>
+<body>
+<div id="app">
+<section id="startScreen" class="screen">
+ <div class="start-card">
+  <div class="logo">Eşli Dost Kazığı</div>
+  <div class="subtitle">108 kart · eşli strateji · rakibe kart kitleme</div>
+  <div class="settings">
+   <div class="setting">
+    <label>Takım sayısı</label>
+    <div class="choice-row" id="teamChoices">
+     <button class="choice active" data-teams="2">2 Takım<br><small>4 Oyuncu</small></button>
+     <button class="choice" data-teams="3">3 Takım<br><small>6 Oyuncu</small></button>
+     <button class="choice" data-teams="4">4 Takım<br><small>8 Oyuncu</small></button>
+    </div>
+   </div>
+   <div class="setting">
+    <label>Sıra süresi</label>
+    <div class="choice-row" id="timeChoices">
+     <button class="choice active" data-time="0">Süresiz</button>
+     <button class="choice" data-time="10">10 saniye</button>
+     <button class="choice" data-time="20">20 saniye</button>
+    </div>
+   </div>
+   <div class="setting">
+    <label>Tıklayarak oyna</label>
+    <div class="choice-row" id="clickPlayChoices">
+     <button class="choice active" data-clickplay="false">Kapalı</button>
+     <button class="choice" data-clickplay="true">Açık</button>
+    </div>
+   </div>
+  </div>
+  <button id="startBtn">OYUNU BAŞLAT</button>
+  <div class="help">Kartı tıklayarak veya sürükleyerek oynayabilirsin. Geçerli hedefler hamle sırasında parlar.</div>
+ </div>
+</section>
+
+<section id="game" class="screen hidden players4">
+ <div class="topbar">
+  <div class="brand-mini">EŞLİ DOST KAZIĞI</div>
+  <div class="top-actions">
+   <button class="icon-btn" id="scoreBtn">Skorboard</button>
+   <button class="icon-btn" id="rulesBtn">Kurallar</button>
+  </div>
+ </div>
+ <div id="table"></div>
+ <div class="center-area">
+   <div class="direction" id="directionText">SAAT YÖNÜNÜN TERSİ · SIRADAKİ SAĞDA</div>
+   <div class="zone-label">Orta atma alanı</div>
+   <div class="center-stack" id="centerStack"></div>
+   <div class="zone-label">Başlangıç kartları</div>
+   <div class="start-pile" id="startPile"></div>
+ </div>
+ <div class="turn-info" id="turnInfo"></div>
+ <div id="timerPill">SÜRESİZ</div>
+ <div id="handArea"><div id="hand"></div><div class="drag-hint">Kartı sürükle veya tıkla</div></div>
+ <div id="toast"></div>
+</section>
+
+<div id="modalLayer" class="overlay hidden"></div>
+
+<section id="endScreen" class="screen hidden">
+ <div class="end-card">
+  <div class="trophy">♛</div>
+  <div class="end-title" id="winnerTitle"></div>
+  <div class="end-score" id="winnerSub"></div>
+  <div class="final-list" id="finalList"></div>
+  <div class="modal-actions"><button class="gold-btn" id="restartBtn">YENİ OYUN</button></div>
+ </div>
+</section>
+</div>
+<div id="landscapeNotice"><div><div class="rotate-icon">↻</div><strong>Yatay moda geç</strong><div class="rotate-copy">Eşli Dost Kazığı, masa düzeni korunacak şekilde yatay ekranda oynanır.</div></div></div>
+
+<script>
+(() => {
+"use strict";
+
+const SUITS=[
+ {s:"♠",name:"Maça",red:false},{s:"♥",name:"Kupa",red:true},
+ {s:"♦",name:"Karo",red:true},{s:"♣",name:"Sinek",red:false}
+];
+const RANKS=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+const VALUES={2:2,3:30,4:4,5:5,6:6,7:7,8:8,9:9,10:10,J:10,Q:10,K:10,A:10,JOB:60};
+const BOT_NAMES=["Ayşe","Mehmet","Elif","Can","Zeynep","Emre","Deniz","Mert"];
+const TEAM_NAMES=["Sarı Takım","Mavi Takım","Kırmızı Takım","Yeşil Takım"];
+
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+let state=null;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function makeDeck(){
+ let d=[],id=0;
+ for(let deck=0;deck<2;deck++){
+  for(const r of RANKS) for(const su of SUITS) d.push({id:id++,rank:r,value:r,suit:su.s,red:su.red,job:false});
+ }
+ for(let j=0;j<4;j++) d.push({id:id++,rank:"JOB",value:"JOB",suit:"★",red:false,job:true});
+ return shuffle(d);
+}
+function valueLabel(v){return v==="JOB"?"JOB":v}
+function cardHTML(c, cls=""){
+ if(c.job)return `<div class="${cls} job"><div class="hand-job">JOB</div><div style="text-align:center;font-size:18px">★</div></div>`;
+ return `<div class="${cls} ${c.red?'red':''}"><div class="rank">${c.rank}</div><div class="suit">${c.suit}</div></div>`;
+}
+function groupCard(g){
+ const fake={rank:g.value,value:g.value,suit:g.value==="JOB"?"★":"♠",red:["♥","♦"].includes(g.suit),job:g.value==="JOB"};
+ return fake;
+}
+function teamColor(t){return ["#f2c85b","#70a7ff","#ef6d86","#65d6a0"][t%4]}
+function teamLabel(t){return TEAM_NAMES[t%TEAM_NAMES.length]}
+function directionStep(){
+ return state.direction==="CCW" ? 1 : -1;
+}
+function rightOf(i){ return (i+directionStep()+state.n)%state.n; }
+function leftOf(i){ return (i-directionStep()+state.n)%state.n; }
+function partnerOf(i){ return (i+state.n/2)%state.n; }
+
+function initGame(){
+ const teams=state.teams, n=teams*2;
+ state.n=n;
+ state.players=Array.from({length:n},(_,i)=>({
+  id:i,name:i===0?"Sen":BOT_NAMES[i-1],team:i%teams,hand:[],groups:[],isHuman:i===0
+ }));
+ state.direction="CCW";
+ state.startIndex=0;
+ state.round=1;
+ state.totalRounds=n*2;
+ state.roundScores=Array.from({length:teams},()=>[]);
+ state.totalScores=Array(teams).fill(0);
+ state.phase="playing";
+ state.pendingCard=null;
+ state.selectedCardId=null;
+ state.timeLimit=state.timeLimit||0;
+ state.directionStartRounds=n;
+ state.deck=[];
+ state.center=[];
+ state.startGroups=[];
+ state.distribution=1;
+ state.distributionTotal=n===4?6:n===6?4:3;
+ state.distributionNormal=state.distributionTotal-1;
+ beginRound();
+}
+function beginRound(){
+ state.deck=makeDeck();
+ state.center=[];
+ state.startGroups=[];
+ for(const p of state.players){p.hand=[];p.groups=[]}
+ const initial=state.n===4?8:state.n===6?6:4;
+ for(let i=0;i<initial;i++) addStartCard(state.deck.pop());
+ state.distribution=1;
+ dealNextBatch();
+ state.phase="playing";
+ state.turn=state.startIndex;
+ renderAll();
+ startTurn();
+}
+function addStartCard(c){
+ let g=state.startGroups.find(x=>x.value===c.value);
+ if(g)g.count++;
+ else state.startGroups.push({value:c.value,count:1,suit:c.suit});
+}
+function dealNextBatch(){
+ const final=state.distribution===state.distributionTotal;
+ const per=final?5:4;
+ for(const p of state.players){
+  p.hand=[];
+  for(let j=0;j<per;j++) p.hand.push(state.deck.pop());
+ }
+ renderAll();
+}
+function startGame(){
+ const teams=Number(document.querySelector(".choice[data-teams].active").dataset.teams);
+ const time=Number(document.querySelector("#timeChoices .active").dataset.time);
+ const clickPlay=document.querySelector("#clickPlayChoices .active").dataset.clickplay==="true";
+ state={teams,timeLimit:time,clickPlay};
+ initGame();
+}
+function canTargetPlayerGroup(sourceIndex,targetIndex,value){
+ const p=state.players[targetIndex];
+ if(!p.groups.length)return false;
+ return p.groups[p.groups.length-1].value===value;
+}
+function validTargets(card,sourceIndex){
+ const arr=[];
+ const v=card.value;
+ // start groups
+ if(state.startGroups.some(g=>g.value===v)) arr.push({type:"start",label:"Başlangıç grubu",detail:"Başlangıçtaki aynı değerli kartlar"});
+ // center top only
+ const top=state.center[state.center.length-1];
+ if(top && top.value===v) arr.push({type:"center",label:"Ortadaki kart",detail:"Ortadaki en üst kart"});
+ // every player's top group with matching value, including self/partner/rivals
+ for(let i=0;i<state.n;i++){
+  if(canTargetPlayerGroup(sourceIndex,i,v)){
+   let kind=i===sourceIndex?"self":i===partnerOf(sourceIndex)?"partner":"rival";
+   arr.push({type:"player",player:i,kind,label:state.players[i].name+" · "+(kind==="rival"?"Rakip":kind==="partner"?"Eş":"Kendi grubu"),detail:"Üst grup "+v+" · "+state.players[i].groups.at(-1).count+" kart"});
+  }
+ }
+ return arr;
+}
+function playSelected(card,target){
+ if(state.phase!=="playing"||state.turn!==0)return;
+ const p=state.players[0];
+ if(!p.hand.some(c=>c.id===card.id))return;
+ state.selectedCardId=null;
+ p.hand=p.hand.filter(c=>c.id!==card.id);
+ executeMove(0,card,target);
+}
+async function executeMove(src,card,target){
+ state.phase="animating"; clearTimer();
+ if(target.type==="player"){
+   const dest=state.players[target.player];
+   await animateCardTo(card,src,target.player,"player");
+   addToPlayerGroup(dest,card.value,1);
+   if(target.kind==="self"||target.kind==="partner"){
+     const moved=dest.groups.pop();
+     await moveGroup(target.player,moved);
+     state.phase="playing";
+   }else{
+     state.phase="playing";
+   }
+ }else if(target.type==="start"){
+   const g=state.startGroups.find(g=>g.value===card.value);
+   g.count++;
+   await animateSimple(card,"start");
+   const idx=state.startGroups.indexOf(g);
+   state.startGroups.splice(idx,1);
+   const moved={value:g.value,count:g.count,suit:g.suit};
+   await moveGroup(src,moved);
+   state.phase="playing";
+ }else if(target.type==="center"){
+   const top=state.center.pop();
+   await animateCardTo(card,src,-1,"center");
+   const moved={value:top.value,count:2,suit:top.suit};
+   await moveGroup(src,moved);
+   state.phase="playing";
+ }else if(target.type==="discard"){
+   const top=state.center.at(-1);
+   if(top && top.value===card.value){
+     state.center.pop();
+     await animateCardTo(card,src,-1,"center");
+     await moveGroup(src,{value:card.value,count:2,suit:card.suit});
+   }else{
+     state.center.push(card);
+     await animateSimple(card,"discard");
+   }
+   state.phase="playing";
+ }
+ renderAll();
+ await advanceAfterTurn();
+}
+function addToPlayerGroup(p,value,count,suit){
+ const top=p.groups.at(-1);
+ if(top && top.value===value) top.count+=count;
+ else p.groups.push({value,count,suit});
+}
+async function moveGroup(fromIndex,g){
+ const to=rightOf(fromIndex);
+ await animateGroupMove(fromIndex,to,g);
+ addToPlayerGroup(state.players[to],g.value,g.count,g.suit);
+ renderAll();
+}
+function possibleDiscard(card){
+ const top=state.center.at(-1);
+ return !(top && top.value===card.value);
+}
+function targetsForCard(card){
+ let ts=validTargets(card,0);
+ // Discard is always possible. If top center same value, discard triggers immediate matching to right.
+ ts.push({type:"discard",label:possibleDiscard(card)?"Ortaya at":"Eşleşen ortaya at",detail:possibleDiscard(card)?"Kartı ortaya bırak":"Ortadaki kartla eşleşir ve sağa işler"});
+ return ts;
+}
+function chooseCard(card){
+ if(state.phase!=="playing"||state.turn!==0)return;
+ if(state.selectedCardId===card.id){state.selectedCardId=null;clearHighlights();renderHand();return}
+ state.selectedCardId=card.id;
+ highlightTargets(card);
+ renderHand();
+}
+function tryClickTarget(target){
+ if(!state?.clickPlay||state.phase!=="playing"||state.turn!==0||state.selectedCardId==null)return;
+ const card=state.players[0].hand.find(c=>c.id===state.selectedCardId);
+ if(!card)return;
+ if(target.type==="discard"){resolveCenterDrop(card);return}
+ const valid=validTargets(card,0).find(t=>t.type===target.type&&(t.type!=="player"||t.player===target.player));
+ if(valid)showOrPlay(card,valid);
+}
+function highlightTargets(card){
+ clearHighlights();
+ for(const t of targetsForCard(card)){
+  if(t.type==="player"){
+   const el=document.querySelector(`.seat[data-id="${t.player}"]`);
+   if(el)el.classList.add("active-target");
+  } else if(t.type==="start"){
+   $("#startPile").classList.add("active-target");
+  } else if(t.type==="center"){
+   $("#centerStack").classList.add("active-target");
+  }
+ }
+}
+function clearHighlights(){
+ $$(".active-target").forEach(e=>e.classList.remove("active-target"));
+}
+function showChooser(card,includeDiscard=true,providedTargets=null){
+ const targets=providedTargets||validTargets(card,0);
+ if(includeDiscard)targets.push({type:"discard",label:possibleDiscard(card)?"Ortaya at":"Ortadaki kartla eşleştir",detail:possibleDiscard(card)?"Kartı orta yığına bırak":"Ortadaki kartla eşleşir ve sıradaki oyuncuya gider"});
+ if(targets.length===1){playSelected(card,targets[0]);return}
+ const layer=$("#modalLayer");layer.classList.remove("hidden");
+ layer.innerHTML=`<div class="modal" id="targetChooser"><div class="close-row"><h2>${card.rank} nereye işlensin?</h2><button class="close" id="cancelTarget">İptal</button></div><div class="target-grid">${
+ targets.map((t,i)=>`<button class="target-btn" data-ti="${i}"><b>${t.label}</b><small>${t.detail}</small></button>`).join("")
+ }</div></div>`;
+ $$("#targetChooser .target-btn").forEach(btn=>btn.onclick=()=>{const t=targets[Number(btn.dataset.ti)];layer.classList.add("hidden");layer.innerHTML="";playSelected(card,t)});
+ $("#cancelTarget").onclick=()=>{layer.classList.add("hidden");layer.innerHTML=""};
+}
+function renderAll(){
+ const game=$("#game");game.className=`screen ${state.phase==="ended"?"hidden":""} players${state.n}`;
+ $("#turnInfo").textContent=`Tur ${state.round}/${state.totalRounds} · Dağıtım ${state.distribution}/${state.distributionTotal} · Başlangıç: ${state.players[state.startIndex].name}`;
+ renderSeats();renderHand();renderCenter();renderStart();
+}
+function renderSeats(){
+ const table=$("#table");table.innerHTML="";
+ for(let i=0;i<state.n;i++){
+  const p=state.players[i], seat=document.createElement("div");
+  seat.className=`seat s${i}${state.turn===i?" active":""}${i===0?" you":""}`;
+  // Her oyuncu eşit açılı bir daire üzerinde oturur. i + n/2 tam karşısıdır.
+  // Böylece 4, 6 ve 8 oyuncuda da oturma sırası oyun sırasıyla birebir kalır.
+  const angle=Math.PI/2-(i*2*Math.PI/state.n);
+  const x=50+38*Math.cos(angle);
+  // Alt oyuncu, başlangıç kartı alanını örtmemesi için biraz daha aşağıda;
+  // karşısındaki oyuncu da aynı eksende yukarıda kalır.
+  const y=i===0?90:i===state.n/2?10:50+36*Math.sin(angle);
+  seat.style.left=`${x}%`;seat.style.top=`${y}%`;seat.style.right="auto";seat.style.bottom="auto";
+  seat.style.transform="translate(-50%,-50%)";
+  seat.dataset.id=i;
+  const hiddenGroups=Math.max(0,p.groups.length-3);
+  const visibleGroups=p.groups.slice(-3);
+  const groups=visibleGroups.map((g,idx)=>{
+   const fake=groupCard(g);
+   return `<div class="group ${fake.red?'red':''} ${fake.job?'job':''}" data-gidx="${idx}">
+     <div class="mini-card">${fake.job?'<div class="hand-job">JOB</div><div style="text-align:center">★</div>':`<div class="rank">${fake.rank}</div><div class="suit">${fake.suit}</div>`}</div>
+     <div class="count">${g.count}×</div>
+   </div>`
+  }).join("");
+  const backs=Array.from({length:Math.min(5,p.hand.length)},()=>'<span class="card-back"></span>').join("");
+  seat.innerHTML=`<div class="seat-card">
+   <div class="turn-beacon">ŞİMDİ OYNUYOR</div>
+   <div class="seat-name"><span><span class="team-dot" style="color:${teamColor(p.team)};background:${teamColor(p.team)}"></span> K${i+1} · ${p.name}</span>
+   <span class="badges"><span class="badge">T${p.team+1}</span><span class="hand-count">${p.hand.length} kart</span></span></div>
+   <div class="partner-line">Eş: ${state.players[partnerOf(i)].name} · Sıradaki: ${state.players[rightOf(i)].name}</div>
+   <div class="groups">${hiddenGroups?`<span class="group-overflow">+${hiddenGroups} alt grup</span>`:""}${groups||'<span style="font-size:9px;color:#5f746e">Önü boş</span>'}</div>
+   ${i===0?"":`<div class="opponent-hand"><div class="card-backs">${backs}</div><span class="hand-count">${p.hand.length} kapalı kart</span></div>`}
+  </div>`;
+  seat.onclick=()=>tryClickTarget({type:"player",player:i,kind:i===0?"self":i===partnerOf(0)?"partner":"rival"});
+  table.appendChild(seat);
+ }
+}
+function renderHand(){
+ const hand=$("#hand");hand.innerHTML="";
+ const p=state.players[0];
+ p.hand.forEach((c,i)=>{
+  const el=document.createElement("div");
+  el.className=`hand-card ${c.red?'red':''} ${c.job?'job':''} ${state.selectedCardId===c.id?'selected':''}`;
+  el.dataset.id=c.id;
+  el.style.zIndex=10+i;
+  el.style.transform=`rotate(${(i-(p.hand.length-1)/2)*1.5}deg)`;
+  el.innerHTML=c.job?`<div class="hand-job">JOB</div><div style="text-align:center;font-size:25px">★</div>`:`<div class="hand-rank">${c.rank}</div><div class="hand-suit">${c.suit}</div>`;
+  el.onclick=()=>{if(el.dataset.justDragged){delete el.dataset.justDragged;return}chooseCard(c)};
+  el.ondblclick=(event)=>{event.preventDefault();if(state.clickPlay&&state.phase==="playing"&&state.turn===0)resolveCenterDrop(c)};
+  attachDrag(el,c);
+  hand.appendChild(el);
+ });
+}
+function renderCenter(){
+ const stack=$("#centerStack");stack.innerHTML="";
+ stack.onclick=()=>tryClickTarget({type:"discard"});
+ if(!state.center.length){stack.innerHTML='<div class="center-empty">ORTA BOŞ</div>';return}
+ const visible=state.center.slice(-4);
+ visible.forEach(c=>{
+  const el=document.createElement("div");el.className=`center-card ${c.red?'red':''} ${c.job?'job':''}`;
+  el.innerHTML=c.job?`<div class="rank">JOB</div><div class="suit">★</div>`:`<div class="rank">${c.rank}</div><div class="suit">${c.suit}</div>`;
+  stack.appendChild(el);
+ });
+}
+function renderStart(){
+ const pile=$("#startPile");pile.innerHTML="";
+ pile.onclick=()=>tryClickTarget({type:"start"});
+ state.startGroups.forEach(g=>{
+  const fake=groupCard(g),el=document.createElement("div");el.className=`start-group ${fake.red?'red':''} ${fake.job?'job':''}`;
+  el.innerHTML=`<div class="mini-card">${fake.job?'<div class="hand-job">JOB</div><div style="text-align:center">★</div>':`<div class="rank">${fake.rank}</div><div class="suit">${fake.suit}</div>`}</div><div class="count">${g.count}×</div>`;
+  pile.appendChild(el);
+ });
+}
+function attachDrag(el,card){
+ let dragging=false,startX=0,startY=0,ghost=null;
+ const down=(e)=>{
+  if(state.turn!==0||state.phase!=="playing")return;
+  const pt=e.touches?e.touches[0]:e;
+  dragging=true;startX=pt.clientX;startY=pt.clientY;el.classList.add("dragging");
+  ghost=el.cloneNode(true);ghost.style.position="fixed";ghost.style.left=`${pt.clientX-36}px`;ghost.style.top=`${pt.clientY-52}px`;
+  ghost.style.margin=0;ghost.style.pointerEvents="none";ghost.style.zIndex=9999;document.body.appendChild(ghost);
+  document.body.style.cursor="grabbing";
+ };
+ const move=(e)=>{
+  if(!dragging)return;
+  const pt=e.touches?e.touches[0]:e;
+  ghost.style.left=`${pt.clientX-36}px`;ghost.style.top=`${pt.clientY-52}px`;
+  const target=hitTarget(pt.clientX,pt.clientY,card);
+  clearHighlights();
+  if(target?.el)target.el.classList.add("active-target");
+ };
+ const up=(e)=>{
+  if(!dragging)return;
+  const pt=e.changedTouches?e.changedTouches[0]:e;
+  dragging=false;el.classList.remove("dragging");document.body.style.cursor="";
+  if(ghost){ghost.remove();ghost=null}
+  clearHighlights();
+  const dist=Math.hypot(pt.clientX-startX,pt.clientY-startY);
+  if(dist<8)return;
+  el.dataset.justDragged="1";
+  const target=hitTarget(pt.clientX,pt.clientY,card);
+  if(target) showOrPlay(card,target.data);
+ };
+ el.addEventListener("mousedown",down);el.addEventListener("mousemove",move);window.addEventListener("mouseup",up);
+ el.addEventListener("touchstart",down,{passive:true});el.addEventListener("touchmove",move,{passive:false});window.addEventListener("touchend",up,{passive:true});
+}
+function hitTarget(x,y,card){
+ const els=[];
+ $$(".seat").forEach(el=>els.push({el,data:{type:"player",player:Number(el.dataset.id),kind:Number(el.dataset.id)===0?"self":Number(el.dataset.id)===partnerOf(0)?"partner":"rival"}}));
+ // Orta alana bırakmak "hangi eşleşme uygulanacak?" kontrolünü tetikler.
+ // Kullanıcı belirli bir oyuncuya/gruba bırakırsa o hedef doğrudan seçilir.
+ els.push({el:$("#centerStack"),data:{type:"discard"}});
+ els.push({el:$("#startPile"),data:{type:"start"}});
+ els.push({el:$("#handArea"),data:null});
+ for(const q of els){
+  if(!q.el||!q.data)continue;
+  const r=q.el.getBoundingClientRect();
+  if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom){
+   if(isValidTargetData(card,q.data))return q;
+  }
+ }
+ // Drop on center is discard if no exact center match too.
+ const cr=$("#centerStack").getBoundingClientRect();
+ if(x>=cr.left&&x<=cr.right&&y>=cr.top&&y<=cr.bottom)return {el:$("#centerStack"),data:{type:"discard"}};
+ return null;
+}
+function isValidTargetData(card,t){
+ const ts=targetsForCard(card);
+ return ts.some(x=>x.type===t.type && (x.type!=="player"||x.player===t.player));
+}
+function showOrPlay(card,target){
+ const valid=targetsForCard(card).filter(x=>x.type===target.type && (x.type!=="player"||x.player===target.player));
+ if(!valid.length)return;
+ // A physical drop on a specific player/start group is an explicit choice.
+ // Only ask when that destination has multiple legal interpretations (most notably center).
+ if(target.type==="player"||target.type==="start") playSelected(card,valid[0]);
+ else if(target.type==="discard") resolveCenterDrop(card);
+ else playSelected(card,valid[0]);
+}
+function resolveCenterDrop(card){
+ const matches=validTargets(card,0);
+ // Ortaya bırakılan kart, masada eşleştiği tek hedef varsa otomatik işlenir.
+ // Birden fazla eşleşme yalnızca gerçek bir karar olduğunda sorulur.
+ if(matches.length===0){playSelected(card,{type:"discard"});return}
+ if(matches.length===1){playSelected(card,matches[0]);return}
+ showChooser(card,false,matches);
+}
+function startTurn(){
+ clearTimer();
+ if(state.phase!=="playing")return;
+ state.turn=state.startIndex;
+ renderAll();
+ if(state.turn===0){
+  startHumanTimer();
+ }else{
+  setTimeout(()=>botTurn(state.turn),450);
+ }
+}
+function nextTurn(){
+ state.turn=rightOf(state.turn);
+ renderAll();
+ if(state.turn===0)startHumanTimer();
+ else setTimeout(()=>botTurn(state.turn),450);
+}
+function startHumanTimer(){
+ if(!state.timeLimit){updateTimer();return}
+ state.turnStarted=Date.now();
+ state.timer=setInterval(()=>{
+  const left=state.timeLimit-Math.floor((Date.now()-state.turnStarted)/1000);
+  updateTimer(left);
+  if(left<=0){clearTimer();autoHumanMove();}
+ },250);
+ updateTimer(state.timeLimit);
+}
+function updateTimer(left){
+ const pill=$("#timerPill");
+ if(!state.timeLimit){pill.textContent="SÜRESİZ";pill.classList.remove("urgent");return}
+ if(left==null)left=state.timeLimit;
+ pill.textContent=`${Math.max(0,left)} sn`;
+ pill.classList.toggle("urgent",left<=5);
+}
+function clearTimer(){if(state?.timer){clearInterval(state.timer);state.timer=null}}
+function autoHumanMove(){
+ const p=state.players[0];
+ if(!p.hand.length)return;
+ // Süre dolunca oyunu durdurmak yerine en yararlı yasal hamle oynanır.
+ const ranked=p.hand.map(c=>({c,ts:targetsForCard(c)})).sort((a,b)=>scoreHuman(a)-scoreHuman(b));
+ const best=ranked[0];
+ const target=best.ts.filter(t=>t.type!=="discard")[0]||{type:"discard"};
+ playSelected(best.c,target);
+}
+function scoreHuman(x){
+ let s=0;
+ for(const t of x.ts){
+  if(t.type==="player") s+=t.kind==="rival"?40:t.kind==="partner"?25:15;
+  if(t.type==="start")s+=30;
+  if(t.type==="center")s+=35;
+ }
+ return -s + Math.random()*5;
+}
+async function botTurn(i){
+ if(state.phase!=="playing"||state.turn!==i)return;
+ const p=state.players[i];
+ if(!p.hand.length){nextTurn();return}
+ const next=rightOf(i), partner=partnerOf(i);
+ function targets(c){
+  const ts=validTargets(c,i);
+  return {
+   self:ts.filter(t=>t.type==="player"&&t.player===i),
+   partner:ts.filter(t=>t.type==="player"&&t.player===partner),
+   next:ts.filter(t=>t.type==="player"&&t.player===next),
+   rival:ts.filter(t=>t.type==="player"&&t.kind==="rival"&&t.player!==next),
+   start:ts.filter(t=>t.type==="start"), center:ts.filter(t=>t.type==="center")
+  };
+ }
+ const ranked=p.hand.map(c=>{
+  const x=targets(c); let priority=0, list=[];
+  // Bot önce kendi/eşinin üstündeki yükü açar; sonra sıradakine
+  // grup gönderen orta/başlangıç hamlelerini, ardından rakibe kitlemeyi seçer.
+  if(x.self.length){priority=700;list=x.self}
+  else if(x.partner.length){priority=650;list=x.partner}
+  else if(x.start.length){priority=590;list=x.start}
+  else if(x.center.length){priority=570;list=x.center}
+  else if(x.next.length){priority=500;list=x.next}
+  else if(x.rival.length){priority=400;list=x.rival}
+  return {c,x,list,score:priority+(VALUES[c.value]||0)*1.5+Math.random()*8};
+ }).sort((a,b)=>b.score-a.score);
+ const best=ranked[0];
+ let target=best.list[0]||{type:"discard"};
+ if(best.list.length>1) target=best.list.slice().sort((a,b)=>(state.players[b.player]?.groups.at(-1)?.count||0)-(state.players[a.player]?.groups.at(-1)?.count||0))[0];
+ await executeBotMove(i,best.c,target);
+}
+
+async function executeBotMove(src,card,target){
+ state.phase="animating";clearTimer();
+ const p=state.players[src];p.hand=p.hand.filter(c=>c.id!==card.id);
+ if(target.type==="player"){
+  const dest=state.players[target.player];
+  await animateCardTo(card,src,target.player,"player");
+  addToPlayerGroup(dest,card.value,1,card.suit);
+  if(target.kind==="self"||target.kind==="partner"){
+   const moved=dest.groups.pop();await moveGroup(target.player,moved);
+  }
+ }else if(target.type==="start"){
+  const g=state.startGroups.find(g=>g.value===card.value);g.count++;
+  await animateSimple(card,"start");
+  state.startGroups.splice(state.startGroups.indexOf(g),1);
+  await moveGroup(src,{value:g.value,count:g.count,suit:g.suit});
+ }else if(target.type==="center"){
+  state.center.pop();await animateCardTo(card,src,-1,"center");await moveGroup(src,{value:card.value,count:2,suit:card.suit});
+ }else{
+  const top=state.center.at(-1);
+  if(top&&top.value===card.value){state.center.pop();await animateCardTo(card,src,-1,"center");await moveGroup(src,{value:card.value,count:2,suit:card.suit})}
+  else{state.center.push(card);await animateSimple(card,"discard")}
+ }
+ state.phase="playing";renderAll();
+ await advanceAfterTurn();
+}
+async function advanceAfterTurn(){
+ if(!state.players.every(p=>p.hand.length===0)){
+  nextTurn();
+  return;
+ }
+ // Empty hands do NOT end the round unless all 108 cards of this round
+ // have already been dealt. The remaining deck is dealt in another batch.
+ if(state.distribution < state.distributionTotal){
+  state.distribution++;
+  state.phase="dealing";
+  renderAll();
+  await sleep(500);
+  dealNextBatch();
+  state.phase="playing";
+  state.turn=state.startIndex;
+  renderAll();
+  startTurn();
+  return;
+ }
+ await finishRound();
+}
+
+function sourceRect(src){
+ const selector=src===0?"#hand .hand-card":".seat[data-id=\""+src+"\"] .seat-card";
+ return $(selector)?.getBoundingClientRect()||{left:innerWidth/2,top:innerHeight/2,width:1,height:1};
+}
+function targetRect(dest,type){
+ const selector=type==="center"?"#centerStack":type==="start"?"#startPile":".seat[data-id=\""+dest+"\"] .seat-card";
+ return $(selector)?.getBoundingClientRect()||{left:innerWidth/2,top:innerHeight/2,width:1,height:1};
+}
+async function fly(card,from,to){
+ const el=document.createElement("div");el.className=`fly-card ${card.red?"red":""} ${card.job?"job":""}`;
+ el.innerHTML=card.job?'<div class="hand-job">JOB</div><div style="font-size:16px">★</div>':`<div class="rank">${card.rank}</div><div class="suit">${card.suit}</div>`;
+ const sx=from.left+from.width/2-28,sy=from.top+from.height/2-40,tx=to.left+to.width/2-28,ty=to.top+to.height/2-40;
+ el.style.left=sx+"px";el.style.top=sy+"px";document.body.appendChild(el);
+ await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.transform=`translate(${tx-sx}px,${ty-sy}px) rotate(7deg) scale(.9)`;setTimeout(r,350)})));
+ el.style.opacity="0";await sleep(80);el.remove();
+}
+async function animateCardTo(card,src,dest,type){
+ await fly(card,sourceRect(src),targetRect(dest,type));
+ const selector=type==="center"?"#centerStack":".seat[data-id=\""+dest+"\"] .seat-card";
+ const target=$(selector);if(target){target.classList.remove(type==="center"?"card-revealed":"group-landed");void target.offsetWidth;target.classList.add(type==="center"?"card-revealed":"group-landed")}
+}
+async function animateSimple(card,type){await fly(card,sourceRect(state.turn),targetRect(-1,type))}
+async function animateGroupMove(from,to,g){
+ const card=groupCard(g),a=targetRect(from,"player"),b=targetRect(to,"player");
+ const source=$(".seat[data-id=\""+from+"\"] .seat-card");if(source){source.classList.remove("group-source");void source.offsetWidth;source.classList.add("group-source")}
+ const el=document.createElement("div");el.className=`group-flight ${card.job?"job":""}`;
+ el.innerHTML=card.job?`<div class="job-title">JOB</div><div style="text-align:center">★</div><div class="qty">${g.count}×</div>`:`<div class="rank">${card.rank}</div><div class="suit">${card.suit}</div><div class="qty">${g.count}×</div>`;
+ const sx=a.left+a.width/2-30,sy=a.top+a.height/2-39,tx=b.left+b.width/2-30,ty=b.top+b.height/2-39;
+ el.style.left=sx+"px";el.style.top=sy+"px";document.body.appendChild(el);
+ await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.transform=`translate(${tx-sx}px,${ty-sy}px) rotate(${tx>sx?6:-6}deg) scale(1.05)`;setTimeout(r,590)})));
+ el.style.opacity="0";await sleep(100);el.remove();
+ const target=$(".seat[data-id=\""+to+"\"] .seat-card");if(target){target.classList.remove("group-landed");void target.offsetWidth;target.classList.add("group-landed")}
+}
+
+async function finishRound(){
+ state.phase="roundEnd";clearTimer();renderAll();
+ const teamRound=Array(state.teams).fill(0), playerPts=[];
+ for(const p of state.players){
+  const pts=p.groups.reduce((sum,g)=>sum+VALUES[g.value]*g.count,0);
+  playerPts[p.id]=pts;teamRound[p.team]+=pts;
+ }
+ for(let t=0;t<state.teams;t++){
+  const ids=state.players.filter(p=>p.team===t).map(p=>p.id);
+  if(ids.every(i=>playerPts[i]===0))teamRound[t]-=100;
+  state.totalScores[t]+=teamRound[t];
+  state.roundScores[t].push(teamRound[t]);
+ }
+ showRoundSummary(playerPts,teamRound);
+}
+function showRoundSummary(playerPts,teamRound){
+ const layer=$("#modalLayer");layer.classList.remove("hidden");
+ const cards=Array.from({length:state.teams},(_,t)=>{
+  const ids=state.players.filter(p=>p.team===t).map(p=>p.id);
+  const bonus=ids.every(i=>playerPts[i]===0);
+  return `<div class="summary-card"><strong>${teamLabel(t)}</strong><div>${ids.map(i=>`${state.players[i].name}: ${playerPts[i]}`).join("<br>")}</div><div style="margin-top:5px;color:${bonus?'#54e09a':'#b9c8c3'}">Tur: ${teamRound[t]}${bonus?" · -100 bonus":""}</div></div>`
+ }).join("");
+ layer.innerHTML=`<div class="modal"><div class="close-row"><h2>Tur ${state.round} Tamamlandı</h2></div><div class="round-summary">${cards}</div><div class="modal-actions"><button class="gold-btn" id="nextRoundBtn">${state.round<state.totalRounds?"SONRAKİ TUR":"KAZANANI GÖR"}</button></div></div>`;
+ $("#nextRoundBtn").onclick=nextRound;
+}
+function nextRound(){
+ $("#modalLayer").classList.add("hidden");$("#modalLayer").innerHTML="";
+ if(state.round>=state.totalRounds){endGame();return}
+ // After every completed 108-card round, the next player in the current
+ // direction starts. After every player has started once, reverse direction.
+ if(state.round===state.directionStartRounds){
+  state.direction="CW";
+ }
+ state.startIndex=rightOf(state.startIndex);
+ state.round++;
+ beginRound();
+}
+function endGame(){
+ state.phase="ended";clearTimer();
+ const sorted=state.totalScores.map((s,i)=>({i,s})).sort((a,b)=>a.s-b.s);
+ $("#winnerTitle").textContent=`${teamLabel(sorted[0].i)} Kazandı!`;
+ $("#winnerSub").textContent=`Toplam skor: ${sorted[0].s} · En düşük skor kazanır`;
+ $("#finalList").innerHTML=sorted.map((x,k)=>`<div class="final-team ${k===0?'win':''}"><span>${k===0?'♛ ':''}${teamLabel(x.i)} · ${state.players.filter(p=>p.team===x.i).map(p=>p.name).join(" & ")}</span><strong>${x.s}</strong></div>`).join("");
+ $("#endScreen").classList.remove("hidden");
+}
+function openScoreboard(){
+ const layer=$("#modalLayer");layer.classList.remove("hidden");
+ const rows=Array.from({length:state.teams},(_,t)=>{
+  const rounds=state.roundScores[t].map((s,i)=>`<span style="display:inline-block;margin-right:9px">T${i+1}: ${s}</span>`).join("");
+  const members=state.players.filter(p=>p.team===t).map(p=>p.name).join(" · ");
+  return `<tr class="${state.totalScores[t]===Math.min(...state.totalScores)?'winner':''}"><td><strong>${teamLabel(t)}</strong><br><span style="font-size:10px;color:#91a49e">${members}</span></td><td>${state.totalScores[t]}</td><td style="font-size:11px;color:#91a49e">${rounds||"—"}</td></tr>`
+ }).join("");
+ layer.innerHTML=`<div class="modal"><div class="close-row"><h2>Skorboard</h2><button class="close" id="closeScore">Oyuna Dön</button></div>
+ <table class="score-table"><thead><tr><th>Takım</th><th>Toplam</th><th>Tur skorları</th></tr></thead><tbody>${rows}</tbody></table>
+ <div style="margin-top:15px;color:#829690;font-size:11px">Skorboard yalnızca bilgi panelidir; oyun durumu değişmez.</div></div>`;
+ $("#closeScore").onclick=()=>{layer.classList.add("hidden");layer.innerHTML="";renderAll()};
+}
+function openRules(){
+ const layer=$("#modalLayer");layer.classList.remove("hidden");
+ layer.innerHTML=`<div class="modal"><div class="close-row"><h2>Hızlı Kurallar</h2><button class="close" id="closeRules">Oyuna Dön</button></div>
+ <div style="line-height:1.65;color:#c4d0cc;font-size:13px">
+ <p><b>1 tam tur:</b> 108 kartın tamamı dağıtılır ve bütün oyuncular ellerindeki kartları bitirir. 4/6/8 oyuncuda sırasıyla 6/4/3 dağıtım yapılır; son dağıtım kişi başı 5 karttır.</p><p><b>108 kart:</b> 2 deste + 4 Job. Aynı değer, sembol farklı olsa bile eşleşir.</p>
+ <p><b>Her sırada 1 kart:</b> Kartı tıklayabilir veya sürükleyip hedefe bırakabilirsin.</p>
+ <p><b>Kendi/eş grubun:</b> Üst gruba eklenir ve oluşan grubun tamamı sıradaki oyuncuya taşınır.</p>
+ <p><b>Rakip grubu:</b> Üst gruba eklenir ve o rakibin önünde kalır; başka bir yere kaymaz.</p>
+ <p><b>Orta:</b> Tekli kartlardan oluşur. Aynı değer ikinci kez ortaya atılamaz; eşleşerek atan oyuncunun <b>sıradaki oyuncusuna</b> 2'li grup olarak gider.</p>
+ <p><b>Başlangıç kartları:</b> Ayrı alandır; aynı değerler başlangıçta gruplanır. Eşleşen grup bir sağa gider.</p>
+ <p><b>Ön gruplar:</b> Aynı değerde gelen gruplar birleşir. Sadece en üst grup hedeflenebilir.</p>
+ <p><b>Puan:</b> 2-9 kendi değeri; 3 = 30; 10/J/Q/K/A = 10; Job = 60. İki eş de sıfır kartla bitirirse -100.</p>
+ <p><b>Yön:</b> Saat yönünün tersinde sıradaki oyuncu fiziksel olarak sağdadır; saat yönünde sıradaki oyuncu fiziksel olarak soldadır. Bir grup her zaman sıradaki oyuncuya kayar. 4/6/8 oyuncuda toplam 8/12/16 tur.</p>
+ </div></div>`;
+ $("#closeRules").onclick=()=>{layer.classList.add("hidden");layer.innerHTML="";renderAll()};
+}
+$$(".choice").forEach(btn=>btn.addEventListener("click",()=>{
+ const group=btn.closest(".choice-row");group.querySelectorAll(".choice").forEach(x=>x.classList.remove("active"));btn.classList.add("active");
+}));
+$("#startBtn").onclick=()=>{$("#startScreen").classList.add("hidden");$("#game").classList.remove("hidden");startGame()};
+$("#scoreBtn").onclick=openScoreboard;
+$("#rulesBtn").onclick=openRules;
+$("#restartBtn").onclick=()=>location.reload();
+
+})();
+</script>
+</body>
+</html>
