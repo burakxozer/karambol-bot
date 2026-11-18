@@ -1,61 +1,1335 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lig + Dart</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0b0806" />
+<title>Yalancı Zar · Bözer Gaming</title>
+<meta name="description" content="Herkes zarını kupanın altında gizler; teklifi yükselt ya da “Yalan!” de. Blöf, cesaret ve biraz da hesap." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
-:root{--bg:#0b1220;--panel:#111827;--soft:#020617;--text:#e5e7eb;--accent:#22c55e;--danger:#ef4444;--line:#263246;--blue:#06b6d4}
-*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{margin:0;background:var(--bg);color:var(--text)}.app{max-width:920px;margin:auto;padding:12px}h1{text-align:center;margin:8px 0 16px;font-size:28px}.card{background:var(--panel);padding:14px;border-radius:16px;margin-bottom:12px}.muted{opacity:.68}.hidden{display:none!important}button,input{font:inherit}button{width:100%;margin-top:10px;padding:13px;border:0;border-radius:13px;background:var(--accent);color:#06120a;font-weight:800;font-size:16px;cursor:pointer}button:hover{filter:brightness(1.08)}button.secondary{background:#334155;color:white}.btn-row{display:flex;gap:10px}.btn-row button{flex:1}input{width:100%;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--soft);color:var(--text);font-size:17px;margin-top:7px}.match{background:var(--soft);border:1px solid var(--line);padding:12px;border-radius:13px;margin-top:8px}.match.playable{cursor:pointer;border-color:var(--accent)}.match.playable:hover{transform:translateY(-1px);background:#0d1d22}.match.done{opacity:.62}.teams{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center}.team{font-weight:700;overflow-wrap:anywhere}.win{color:var(--accent)}.lose{color:var(--danger);text-decoration:line-through}.round-title{display:flex;justify-content:space-between;align-items:center}.badge{font-size:12px;padding:4px 8px;border-radius:999px;background:#253247}.notice{border-left:4px solid var(--blue);padding:10px;background:#102033;border-radius:8px;margin-top:10px}.standings{display:flex;flex-direction:column;gap:4px}.standing-header,.standing-row{display:grid;grid-template-columns:30px minmax(0,1fr) 38px 38px 38px 68px 48px;align-items:center;gap:4px;padding:10px 7px}.standing-header{font-size:12px;opacity:.7}.standing-row{background:var(--soft);border-radius:10px}.standing-row:nth-child(2){border:1px solid #facc15}.standing-team{font-weight:700;overflow-wrap:anywhere}.points{color:var(--accent);font-weight:900;text-align:center;font-size:20px}.mode-switch{display:flex;gap:7px;margin:10px 0}.mode-switch button{margin:0;background:var(--soft);color:var(--text);border:1px solid var(--line)}.mode-switch button.selected{border-color:var(--accent);color:var(--accent)}.match-nav{display:flex;gap:8px;margin-bottom:10px}.match-nav button{margin:0;padding:9px;background:#334155;color:#fff;font-size:14px}.board{display:grid;border:2px solid #334155;border-radius:11px;overflow:hidden;margin-top:10px}.board-header,.board-row{display:grid}.board-row:nth-child(even){background:#020617}.board-row:nth-child(odd){background:#111c3a}.cell{min-height:43px;display:flex;align-items:center;justify-content:center;border-left:1px solid var(--line);font-size:21px;user-select:none}.cell:first-child{border-left:0}.dart-cell{cursor:pointer}.dart-cell:active{transform:scale(.9);background:#1e293b}.score-label{font-weight:900;background:rgba(0,0,0,.32)}.team-header{flex-direction:column;font-size:13px;text-align:center;overflow-wrap:anywhere}.team-header span{font-size:21px;font-weight:900;color:var(--accent)}.mark{width:26px;height:26px;display:flex;justify-content:center;align-items:center;border:2px solid var(--text);border-radius:50%;font-size:16px}.controls{display:flex;gap:10px}.controls button{background:#334155;color:white}.controls .undo{background:#dc2626}.modal{position:fixed;inset:0;z-index:10;background:rgba(0,0,0,.77);display:flex;align-items:center;justify-content:center;padding:16px}.modal-box{width:min(480px,100%);background:#0f172a;border-radius:20px;padding:24px;text-align:center;box-shadow:0 0 30px rgba(34,197,94,.25)}.cup{font-size:60px}@media(max-width:600px){h1{font-size:23px}.standing-header,.standing-row{grid-template-columns:22px minmax(0,1fr) 28px 28px 28px 53px 34px;padding:8px 4px;font-size:13px}.points{font-size:16px}.cell{min-height:37px;font-size:17px}.team-header span{font-size:17px}.btn-row{gap:7px}button{font-size:15px;padding:11px}}
-.board{display:block;--board-rows:14;overflow:hidden}.cell{min-height:clamp(30px,calc((100dvh - 285px) / var(--board-rows)),54px);height:clamp(30px,calc((100dvh - 285px) / var(--board-rows)),54px)}.controls .info{flex:0 0 42px;background:var(--blue);color:#fff;font-size:18px;padding:0}.match-nav{justify-content:flex-end;flex-wrap:wrap;gap:6px}.match-nav button{width:auto;flex:none;padding:7px 10px;font-size:12px;border-radius:10px}.modal{align-items:flex-start;overflow-y:auto;padding:16px}.modal-box{max-height:calc(100dvh - 32px);overflow-y:auto}.rule-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:8px}.rule-grid input{min-width:0;margin:0;text-align:center;padding:10px;font-size:14px}.rule-grid label{font-size:12px;opacity:.75;text-align:center}.rule-row{border:1px solid var(--line);border-radius:12px;padding:9px;margin-top:9px}.rule-row button{margin:8px 0 0;background:#475569;color:#fff;padding:8px;font-size:13px}@media(max-width:600px){.cell{min-height:clamp(28px,calc((100dvh - 260px) / var(--board-rows)),42px);height:clamp(28px,calc((100dvh - 260px) / var(--board-rows)),42px)}.modal{padding:9px}.modal-box{max-height:calc(100dvh - 18px);padding:16px}.rule-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.match-nav{justify-content:center}.match-nav button{font-size:11px;padding:6px 8px}}
-.board .cell{min-height:var(--row-height,43px);height:var(--row-height,43px)}.board-header .cell{min-height:var(--header-height,58px);height:var(--header-height,58px)}.team-header{font-size:clamp(12px,2.4vw,17px);line-height:1.15;padding:5px}.team-header span{font-size:clamp(20px,3vw,28px)}.score-label{font-size:clamp(18px,3vw,25px)}.controls{margin-top:12px}.controls button{min-width:0}.controls .info{flex:0 0 52px}
+/* =====================================================================
+   BÖZER GAMING · Oyun kiti (10 oyun için ortak görünüm)
+   Koyu, sıcak ışıklı salon; altın vurgular. Mobil öncelikli, güvenli alan,
+   44px dokunma hedefleri, azaltılmış hareket desteği.
+   ===================================================================== */
+:root {
+  --bz-bg0: #07050a;
+  --bz-bg1: #151019;
+  --bz-ink: #f6eedd;
+  --bz-muted: #b8aa92;
+  --bz-dim: #7d725f;
+  --bz-gold: #e2bf6e;
+  --bz-gold-hi: #f8e2a4;
+  --bz-gold-lo: #9b7430;
+  --bz-red: #ec5a5f;
+  --bz-green: #4fd690;
+  --bz-blue: #63a6ff;
+  --bz-panel: rgba(22, 16, 12, 0.94);
+  --bz-line: rgba(226, 191, 110, 0.28);
+  --bz-display: 'Cinzel', 'Trajan Pro', Georgia, serif;
+  --bz-font: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --bz-accent: var(--bz-gold);
+  --bz-safe-t: env(safe-area-inset-top, 0px);
+  --bz-safe-b: env(safe-area-inset-bottom, 0px);
+  --bz-safe-l: env(safe-area-inset-left, 0px);
+  --bz-safe-r: env(safe-area-inset-right, 0px);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: var(--bz-font);
+  color: var(--bz-ink);
+  background: radial-gradient(130% 90% at 50% 0%, var(--bz-bg1) 0%, var(--bz-bg0) 70%) fixed;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+button { font: inherit; color: inherit; }
+.bz-hidden, [hidden] { display: none !important; }
+
+/* ---------------- düğmeler ve seçimler ---------------- */
+.bz-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 18px; border-radius: 13px; cursor: pointer;
+  border: 1px solid var(--bz-line);
+  background: linear-gradient(180deg, rgba(70, 50, 30, 0.9), rgba(36, 24, 14, 0.95));
+  color: var(--bz-gold-hi); font-weight: 750; font-size: 15px; letter-spacing: 0.01em;
+  transition: transform 0.12s, filter 0.15s, box-shadow 0.2s;
+}
+.bz-btn:hover { filter: brightness(1.08); }
+.bz-btn:active { transform: translateY(1px) scale(0.98); }
+.bz-btn:focus-visible { outline: 3px solid var(--bz-gold-hi); outline-offset: 2px; }
+.bz-btn.gold { color: #2a1606; border-color: transparent; background: linear-gradient(180deg, #fbe7ad, #e2b75a 52%, #a8782c); box-shadow: 0 8px 22px rgba(201, 154, 61, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55); }
+.bz-btn.big { min-height: 54px; padding: 0 26px; font-size: 17px; border-radius: 16px; }
+.bz-btn.ghost { background: rgba(255, 255, 255, 0.04); }
+.bz-btn.danger { color: #ffd8d2; border-color: rgba(236, 90, 95, 0.5); background: linear-gradient(180deg, #5b1c1a, #34100e); }
+.bz-btn[disabled] { opacity: 0.45; pointer-events: none; }
+.bz-ib { width: 44px; height: 44px; border-radius: 13px; display: inline-grid; place-items: center; cursor: pointer; border: 1px solid var(--bz-line); background: rgba(30, 22, 15, 0.82); color: var(--bz-gold-hi); }
+.bz-ib:active { transform: scale(0.95); }
+.bz-seg { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.bz-seg button { min-height: 40px; padding: 0 14px; border-radius: 11px; cursor: pointer; border: 1px solid var(--bz-line); background: rgba(255, 255, 255, 0.03); color: var(--bz-muted); font-weight: 700; font-size: 14px; }
+.bz-seg button[aria-pressed='true'] { color: #2a1606; border-color: transparent; background: linear-gradient(180deg, #fbe7ad, #d9aa4b); }
+.bz-input { min-height: 42px; padding: 0 12px; border-radius: 11px; border: 1px solid var(--bz-line); background: rgba(0, 0, 0, 0.35); color: var(--bz-ink); font: inherit; font-weight: 650; width: 100%; }
+
+/* ---------------- başlangıç ekranı ---------------- */
+.bz-start { position: fixed; inset: 0; overflow-y: auto; padding: calc(18px + var(--bz-safe-t)) 18px calc(26px + var(--bz-safe-b)); display: flex; justify-content: center; }
+.bz-start-in { width: min(980px, 100%); display: grid; gap: 18px; align-content: start; }
+.bz-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.bz-brand { display: flex; align-items: center; gap: 10px; color: var(--bz-muted); font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-decoration: none; }
+.bz-brand b { font-family: var(--bz-display); color: var(--bz-gold-hi); font-size: 15px; letter-spacing: 0.06em; }
+.bz-hero { position: relative; display: grid; grid-template-columns: 1.05fr 1fr; gap: 18px; align-items: center; padding: 22px; border-radius: 26px; overflow: hidden;
+  background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--bz-accent) 26%, transparent), transparent 55%), linear-gradient(160deg, rgba(40, 28, 18, 0.95), rgba(14, 10, 8, 0.96));
+  border: 1px solid var(--bz-line); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5); }
+.bz-hero h1 { margin: 0 0 6px; font-family: var(--bz-display); font-weight: 800; font-size: clamp(34px, 6vw, 58px); line-height: 1; letter-spacing: 0.02em;
+  background: linear-gradient(180deg, #fff6d8 15%, var(--bz-gold) 60%, var(--bz-gold-lo)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.bz-hero p { margin: 0; color: var(--bz-muted); font-size: 15.5px; line-height: 1.5; max-width: 46ch; }
+.bz-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.bz-chip { padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 750; color: var(--bz-gold-hi); background: rgba(226, 191, 110, 0.1); border: 1px solid var(--bz-line); }
+.bz-art { position: relative; min-height: 210px; display: grid; place-items: center; }
+.bz-art svg { width: 100%; max-width: 360px; height: auto; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.5)); }
+.bz-panel { padding: 18px; border-radius: 22px; background: var(--bz-panel); border: 1px solid var(--bz-line); }
+.bz-panel h2 { margin: 0 0 12px; font-family: var(--bz-display); font-size: 19px; color: var(--bz-gold-hi); letter-spacing: 0.03em; }
+.bz-opts { display: grid; gap: 12px; }
+.bz-opt { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 10px; }
+.bz-opt > span { color: var(--bz-muted); font-weight: 700; font-size: 13.5px; }
+.bz-acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+@media (max-width: 720px) {
+  .bz-hero { grid-template-columns: 1fr; padding: 18px; }
+  .bz-art { min-height: 150px; order: -1; }
+  .bz-art svg { max-width: 260px; }
+  .bz-opt { grid-template-columns: 1fr; gap: 6px; }
+}
+
+/* ---------------- oyun alanı ve üst çubuk ---------------- */
+.bz-game { position: fixed; inset: 0; overflow: hidden; }
+.bz-hud { position: absolute; z-index: 50; left: 0; right: 0; top: 0; display: flex; align-items: center; gap: 8px; padding: calc(8px + var(--bz-safe-t)) calc(10px + var(--bz-safe-r)) 8px calc(10px + var(--bz-safe-l));
+  background: linear-gradient(180deg, rgba(8, 6, 4, 0.9), rgba(8, 6, 4, 0)); pointer-events: none; }
+.bz-hud > * { pointer-events: auto; }
+.bz-hud-t { display: grid; line-height: 1.1; min-width: 0; }
+.bz-hud-t b { font-family: var(--bz-display); font-size: 16px; color: var(--bz-gold-hi); white-space: nowrap; }
+.bz-hud-t span { font-size: 12px; color: var(--bz-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bz-hud-mid { flex: 1; display: flex; justify-content: center; min-width: 0; }
+.bz-msg { padding: 6px 14px; border-radius: 99px; font-weight: 800; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; background: rgba(12, 9, 6, 0.75); border: 1px solid var(--bz-line); color: var(--bz-ink); }
+.bz-msg.me { color: #062a1b; background: linear-gradient(180deg, #9ff2c8, #45cf8c); border-color: transparent; box-shadow: 0 0 18px rgba(80, 230, 160, 0.4); animation: bzPulse 1.5s ease-in-out infinite; }
+.bz-msg.warn { color: #2a1406; background: linear-gradient(180deg, #ffd88a, #e7a63c); border-color: transparent; }
+@keyframes bzPulse { 50% { box-shadow: 0 0 28px rgba(80, 230, 160, 0.7); } }
+
+/* ---------------- pencereler, bildirimler, kutlama ---------------- */
+.bz-modals { position: fixed; inset: 0; z-index: 3000; pointer-events: none; }
+.bz-mwrap { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(4, 3, 2, 0.62); pointer-events: auto; animation: bzFade 0.2s ease; }
+.bz-mbox { width: min(520px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 22px; border-radius: 24px; background: linear-gradient(180deg, #2b1f15, #140e09); border: 1px solid rgba(226, 191, 110, 0.4); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); animation: bzPop 0.28s cubic-bezier(0.2, 1.25, 0.3, 1); }
+.bz-mbox h2 { margin: 0 0 8px; font-family: var(--bz-display); color: var(--bz-gold-hi); font-size: 22px; }
+.bz-mbox p { color: var(--bz-muted); line-height: 1.5; margin: 6px 0; }
+.bz-mbox .bz-acts { justify-content: flex-end; }
+.bz-rules { display: grid; gap: 8px; font-size: 14.5px; line-height: 1.5; color: var(--bz-ink); }
+.bz-rules p { margin: 0; color: var(--bz-ink); }
+.bz-rules b { color: var(--bz-gold-hi); }
+@keyframes bzFade { from { opacity: 0; } }
+@keyframes bzPop { from { transform: scale(0.92) translateY(10px); opacity: 0; } }
+.bz-toasts { position: fixed; z-index: 3500; left: 50%; top: calc(64px + var(--bz-safe-t)); transform: translateX(-50%); display: grid; gap: 8px; justify-items: center; pointer-events: none; width: min(92vw, 520px); }
+.bz-toast { padding: 9px 16px; border-radius: 13px; background: rgba(16, 11, 8, 0.95); border: 1px solid var(--bz-line); font-weight: 700; font-size: 14px; box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45); animation: bzToast 0.25s ease; text-align: center; }
+.bz-toast.good { border-color: rgba(79, 214, 144, 0.6); color: #c9f7df; }
+.bz-toast.bad { border-color: rgba(236, 90, 95, 0.6); color: #ffd3d0; }
+.bz-toast.warn { border-color: rgba(231, 166, 60, 0.7); color: #ffe2b0; }
+.bz-toast.out { opacity: 0; transform: translateY(-6px); transition: opacity 0.3s, transform 0.3s; }
+@keyframes bzToast { from { opacity: 0; transform: translateY(-8px); } }
+.bz-banner { position: fixed; z-index: 2600; left: 50%; top: 42%; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 10px; pointer-events: none; animation: bzBan 0.5s cubic-bezier(0.2, 1.3, 0.3, 1); text-align: center; }
+.bz-banner b { font-family: var(--bz-display); font-weight: 900; font-size: clamp(38px, 9vmin, 84px); letter-spacing: 0.04em; white-space: nowrap;
+  background: linear-gradient(180deg, #fff8dc 10%, #f7d27a 48%, #b07a22 85%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px rgba(255, 200, 90, 0.7)) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.7)); }
+.bz-banner.bad b { background: linear-gradient(180deg, #ffe1dc 10%, #ff8a7a 50%, #a5302a 90%); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 18px rgba(255, 90, 80, 0.5)) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.7)); }
+.bz-banner span { padding: 4px 14px; border-radius: 99px; font-weight: 850; font-size: 15px; color: #2a1606; background: linear-gradient(180deg, var(--bz-gold-hi), var(--bz-gold)); }
+.bz-banner.out { opacity: 0; transform: translate(-50%, -60%) scale(0.96); transition: opacity 0.35s, transform 0.35s; }
+@keyframes bzBan { from { opacity: 0; transform: translate(-50%, -50%) scale(0.6); } }
+.bz-confetti { position: fixed; inset: 0; z-index: 2550; pointer-events: none; overflow: hidden; }
+.bz-confetti i { position: absolute; top: -20px; width: 9px; height: 14px; border-radius: 2px; animation: bzConf linear forwards; }
+@keyframes bzConf { to { transform: translate(var(--dx), 110vh) rotate(var(--rot)); } }
+
+/* ---------------- sonuç tablosu ---------------- */
+.bz-res { list-style: none; margin: 10px 0 4px; padding: 0; display: grid; gap: 6px; }
+.bz-res li { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); }
+.bz-res li.win { background: linear-gradient(90deg, rgba(226, 191, 110, 0.22), rgba(226, 191, 110, 0.04)); border-color: rgba(226, 191, 110, 0.5); }
+.bz-res li.me b { color: var(--bz-gold-hi); }
+.bz-res i { font-style: normal; font-weight: 900; font-variant-numeric: tabular-nums; }
+
+/* ---------------- 3B zar ---------------- */
+.bz-die { position: relative; width: var(--ds, 52px); height: var(--ds, 52px); perspective: 520px; }
+.bz-die .cube { position: absolute; inset: 0; transform-style: preserve-3d; }
+.bz-die .f { position: absolute; inset: 0; border-radius: 18%; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); padding: 14%;
+  background: var(--die-bg, linear-gradient(145deg, #fffef8, #f2e9d4 55%, #d9caa7)); box-shadow: inset 0 0 0 1px rgba(80, 50, 20, 0.15), inset 0 -3px 6px rgba(0, 0, 0, 0.14), inset 0 2px 2px rgba(255, 255, 255, 0.85); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.bz-die .f i { width: 66%; height: 66%; margin: auto; border-radius: 50%; background: radial-gradient(circle at 35% 35%, var(--pip-hi, #4a3a30), var(--pip, #130b07) 70%); visibility: hidden; }
+.bz-die .f i.on { visibility: visible; }
+.bz-die .f1 { transform: translateZ(calc(var(--ds, 52px) / 2)); }
+.bz-die .f6 { transform: rotateY(180deg) translateZ(calc(var(--ds, 52px) / 2)); }
+.bz-die .f2 { transform: rotateY(90deg) translateZ(calc(var(--ds, 52px) / 2)); }
+.bz-die .f5 { transform: rotateY(-90deg) translateZ(calc(var(--ds, 52px) / 2)); }
+.bz-die .f3 { transform: rotateX(90deg) translateZ(calc(var(--ds, 52px) / 2)); }
+.bz-die .f4 { transform: rotateX(-90deg) translateZ(calc(var(--ds, 52px) / 2)); }
+.bz-die .sh { position: absolute; inset: 8%; border-radius: 22%; background: rgba(0, 0, 0, 0.55); filter: blur(5px); transform: translate(4px, 7px); }
+
+/* ---------------- iskambil ---------------- */
+.bz-card { position: relative; width: var(--cw, 70px); aspect-ratio: 5 / 7; border-radius: 8%/5.7%; line-height: 0; }
+.bz-card svg { width: 100%; height: 100%; display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------------- yalanci ---------------- */
+.yz-wrap { position: absolute; inset: 0; display: grid; grid-template-rows: 1fr auto; padding: calc(56px + var(--bz-safe-t)) 8px calc(8px + var(--bz-safe-b)); gap: 6px; }
+.yz-table { position: relative; min-height: 0; }
+.yz-felt { position: absolute; left: 4%; right: 4%; top: 10%; bottom: 4%; border-radius: 50%; background: radial-gradient(70% 70% at 50% 40%, #1f7a55 0%, #11533a 55%, #082a1d 100%);
+  box-shadow: 0 0 0 10px #4a2a14, 0 0 0 13px #c9a46a, 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 0 60px rgba(0, 0, 0, 0.5); }
+.yz-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -40%); display: grid; justify-items: center; gap: 6px; text-align: center; }
+.yz-bid { display: flex; align-items: center; gap: 10px; min-height: 64px; padding: 8px 18px; border-radius: 18px; background: rgba(5, 20, 14, 0.6); border: 1px solid rgba(248, 226, 164, 0.35); }
+.yz-bq { font: 900 46px/1 var(--bz-display); color: var(--bz-gold-hi); text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6); }
+.yz-x { font: 800 26px/1 var(--bz-font); color: var(--bz-muted); }
+.yz-by { font-size: 12.5px; font-weight: 750; color: var(--bz-muted); max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.yz-none { color: var(--bz-muted); font-weight: 700; font-size: 14px; }
+.yz-total { font-size: 12.5px; color: #b9dccb; font-weight: 700; }
+.yz-count { opacity: 0; font: 900 40px/1 var(--bz-display); color: #fff; transition: opacity 0.25s; }
+.yz-count.show { opacity: 1; }
+.yz-count small { font-size: 20px; color: var(--bz-muted); }
+.yz-count.ok { color: #9ff2c8; } .yz-count.no { color: #ff9b94; }
+.yz-face { --fs: 26px; display: inline-grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); width: var(--fs); height: var(--fs); padding: 14%; border-radius: 22%; background: linear-gradient(145deg, #fffef8, #e9dfc8); box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.18), 0 2px 4px rgba(0, 0, 0, 0.35); vertical-align: middle; }
+.yz-face i { width: 68%; height: 68%; margin: auto; border-radius: 50%; visibility: hidden; background: #1b120c; }
+.yz-face i.on { visibility: visible; }
+.yz-face[data-v="1"] i.on { background: #c1272d; }
+.yz-face.big { --fs: 48px; }
+.yz-seat { position: absolute; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 4px; transition: filter 0.3s, opacity 0.3s; }
+.yz-seat.out { opacity: 0.35; filter: grayscale(1); }
+.yz-seat.lose { animation: yzLose 1.1s ease; }
+@keyframes yzLose { 15%, 45% { transform: translate(-50%, -50%) translateX(-6px); } 30%, 60% { transform: translate(-50%, -50%) translateX(6px); } }
+.yz-cup { position: relative; width: 58px; height: 64px; }
+.yz-cupb { position: absolute; inset: 0; clip-path: polygon(8% 0, 92% 0, 80% 100%, 20% 100%); background: linear-gradient(90deg, #3a140b, #9c4a2a 42%, #b8643a 52%, #7a3219 64%, #3a140b);
+  box-shadow: inset 0 6px 0 rgba(255, 220, 170, 0.25); transition: transform 0.45s cubic-bezier(0.3, 0.8, 0.3, 1.2); transform-origin: 50% 0; z-index: 2; }
+.yz-cupb::after { content: ''; position: absolute; left: 10%; right: 10%; top: 26%; height: 4px; background: rgba(226, 191, 110, 0.6); }
+.yz-cup.shake .yz-cupb { animation: yzShake 0.6s ease; }
+@keyframes yzShake { 20% { transform: rotate(-12deg) translateY(-4px); } 45% { transform: rotate(11deg); } 70% { transform: rotate(-7deg); } }
+.yz-cup.up .yz-cupb { transform: translateY(-48px) rotate(-14deg); }
+.yz-rev { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); display: flex; gap: 2px; z-index: 1; }
+.yz-rev .yz-face { --fs: 18px; }
+.yz-rev .yz-face.miss { opacity: 0.45; }
+.yz-rev .yz-face.lit { box-shadow: 0 0 0 2px #ffe08a, 0 0 12px rgba(255, 214, 110, 0.95); transform: translateY(-3px); transition: transform 0.15s; }
+.yz-tag { display: flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px; border-radius: 99px; background: rgba(14, 10, 7, 0.86); border: 1px solid var(--bz-line); white-space: nowrap; transition: border-color 0.2s, box-shadow 0.2s; }
+.yz-seat.on .yz-tag { border-color: rgba(248, 226, 164, 0.95); box-shadow: 0 0 18px rgba(248, 210, 120, 0.5); }
+.yz-av { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 13px; background: radial-gradient(circle at 35% 30%, #c98a4b, #5e3214); color: #fff4dc; }
+.yz-tag b { font-size: 13px; max-width: 86px; overflow: hidden; text-overflow: ellipsis; }
+.yz-dn { display: inline-flex; gap: 2px; }
+.yz-dn i { width: 8px; height: 8px; border-radius: 2px; background: #f5ecd9; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); }
+.yz-dn em { font-size: 11px; color: var(--bz-red); font-style: normal; font-weight: 800; }
+.yz-say { position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%) scale(0.8); opacity: 0; padding: 5px 12px; border-radius: 12px; white-space: nowrap; display: flex; align-items: center; gap: 6px;
+  font: 850 15px/1.1 var(--bz-font); color: #2a1606; background: #fff4d6; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45); transition: opacity 0.2s, transform 0.25s; pointer-events: none; z-index: 5; }
+.yz-say::after { content: ''; position: absolute; left: 50%; top: 100%; transform: translateX(-50%); border: 7px solid transparent; border-top-color: #fff4d6; }
+.yz-say.show { opacity: 1; transform: translateX(-50%) scale(1); }
+.yz-say.loud { color: #fff; background: #c8321f; font-size: 19px; letter-spacing: 0.04em; }
+.yz-say.loud::after { border-top-color: #c8321f; }
+.yz-seat.me .yz-say { bottom: auto; top: -46px; }
+.yz-dock { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 18px; background: rgba(16, 11, 8, 0.92); border: 1px solid var(--bz-line); }
+.yz-mine { display: flex; gap: 8px; align-items: center; min-height: 52px; }
+.yz-out { color: var(--bz-muted); font-weight: 700; }
+.yz-ctl { display: grid; gap: 8px; transition: opacity 0.2s; }
+.yz-ctl.off { opacity: 0.55; }
+.yz-qrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.yz-q { min-width: 40px; text-align: center; font: 900 30px/1 var(--bz-display); color: var(--bz-gold-hi); }
+.yz-faces { display: flex; gap: 5px; }
+.yz-faces button { padding: 4px; border-radius: 11px; border: 2px solid transparent; background: rgba(255, 255, 255, 0.04); cursor: pointer; }
+.yz-faces button[aria-pressed='true'] { border-color: #f8e2a4; background: rgba(248, 226, 164, 0.16); }
+.yz-faces button[disabled] { opacity: 0.3; cursor: default; }
+.yz-faces .yz-face { --fs: 32px; }
+.yz-arow { display: flex; gap: 8px; flex-wrap: wrap; }
+.yz-arow .bz-btn { min-height: 46px; }
+.yz-odds { font-size: 12.5px; color: var(--bz-muted); font-weight: 700; min-height: 15px; }
+@media (max-width: 720px) {
+  .yz-dock { grid-template-columns: 1fr; gap: 8px; padding: 8px; }
+  .yz-mine { justify-content: center; }
+  .yz-mine .bz-die { --ds: 40px !important; }
+  .yz-faces .yz-face { --fs: 28px; }
+  .yz-arow .bz-btn { flex: 1; padding: 0 10px; }
+  .yz-cup { width: 46px; height: 50px; }
+  .yz-bq { font-size: 38px; }
+}
+@media (max-height: 520px) {
+  .yz-wrap { grid-template-columns: 1fr minmax(300px, 40%); grid-template-rows: 1fr; }
+  .yz-dock { grid-template-columns: 1fr; align-self: end; }
+  .yz-cup { width: 42px; height: 44px; }
+  .yz-cup.up .yz-cupb { transform: translateY(-36px) rotate(-14deg); }
+}
+
 </style>
 </head>
-<body><main class="app"><h1>🎯 LİG + DART</h1><div id="screen"></div></main><div id="modal" class="modal hidden" onclick="if(event.target===this)closeModal()"><div id="modalBox" class="modal-box"></div></div>
+<body style="--bz-accent:#d9534f">
+<noscript>Bu oyunu oynamak için JavaScript'i etkinleştirin.</noscript>
+<div id="start"></div>
+<div id="game" class="bz-game" hidden>
+  <header id="hud" class="bz-hud"></header>
+
+</div>
 <script>
-const screen=document.querySelector('#screen'), modal=document.querySelector('#modal'), modalBox=document.querySelector('#modalBox');
-const cap=s=>s.toLocaleLowerCase('tr-TR').split(/\\s+/).filter(Boolean).map(x=>x[0].toLocaleUpperCase('tr-TR')+x.slice(1)).join(' ');
-const shuffle=a=>[...a].sort(()=>Math.random()-.5);
-let playerCount=0,teamCount=0,players=[],teams=[],rounds=[],stats={},results={},currentRound=0,doubleRound=false;
-let winPoints=3,byePoints=1,leagueFirstTo=1,scoringMode='win',setRules=[{winnerSets:2,loserSets:1,winnerPoints:2,loserPoints:1}],byeAwarded=new Set(),activeMatch=null;
-let dart={mode:'karambol',numbers:[],firstTo:1,scores:[],points:[0,0],history:[],actions:[],ended:false};
+/* =====================================================================
+   BÖZER GAMING · Oyun kiti (BZ)
+   Ortak yardımcılar: seçiciler, tohumlu rastgelelik, kalıcı ayar, ses sentezi,
+   bildirim/pencere/kutlama, başlangıç ekranı, üst çubuk, sonuç tablosu,
+   üç boyutlu zar ve özgün iskambil kartları.
+   ===================================================================== */
+(function (root) {
+  'use strict';
+  const doc = root.document;
+  const $ = (s, e) => (e || doc).querySelector(s);
+  const $$ = (s, e) => Array.from((e || doc).querySelectorAll(s));
+  function el(html) {
+    const t = doc.createElement('template');
+    t.innerHTML = String(html).trim();
+    return t.content.firstElementChild;
+  }
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  const reduceMotion = !!(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  /** Tohumlu rastgelelik (mulberry32): aynı tohum aynı oyunu üretir (online kilit adım için) */
+  function rng(seed) {
+    let a = seed >>> 0 || 1;
+    const f = () => {
+      a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    f.int = (n) => Math.floor(f() * n);
+    f.pick = (arr) => arr[Math.floor(f() * arr.length)];
+    f.state = () => a;
+    return f;
+  }
+  function shuffle(arr, rnd) {
+    rnd = rnd || Math.random;
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(rnd() * (i + 1));
+      const t = arr[i];
+      arr[i] = arr[j];
+      arr[j] = t;
+    }
+    return arr;
+  }
+  const newSeed = () => (Math.random() * 4294967295) >>> 0 || 7;
+  /** Kalıcı ayar (localStorage; gizli sekmede de çalışır) */
+  function store(key, def) {
+    let v = Object.assign({}, def);
+    try {
+      v = Object.assign({}, def, JSON.parse(localStorage.getItem('bz.' + key) || '{}'));
+    } catch (e) {}
+    return {
+      v,
+      save() {
+        try {
+          localStorage.setItem('bz.' + key, JSON.stringify(v));
+        } catch (e) {}
+      },
+    };
+  }
+  const BOT_NAMES = ['Ayşe', 'Mehmet', 'Zeynep', 'Mustafa', 'Elif', 'Emre', 'Fatma', 'Burak', 'Selin', 'Kerem', 'Deniz', 'Cem', 'Ebru', 'Oğuz', 'Gizem', 'Murat', 'Hülya', 'Serkan', 'Derya', 'Tolga', 'Nazlı', 'Kaan', 'Ceren', 'Umut'];
+  function botNames(n, avoid) {
+    const pool = BOT_NAMES.filter((x) => x !== avoid);
+    shuffle(pool);
+    return pool.slice(0, n);
+  }
 
-function renderPlayerCount(){screen.innerHTML=`<section class="card"><h2>Lig Kurulumu</h2><label>Oyuncu sayısı</label><input id="count" type="number" min="2" placeholder="En az 2"><button onclick="savePlayerCount()">Devam</button></section>`}
-function savePlayerCount(){let v=+document.querySelector('#count').value;if(v<2)return alert('En az 2 oyuncu girin.');playerCount=v;screen.innerHTML=`<section class="card"><h2>Takım Sayısı</h2><input id="teamCount" type="number" min="2" max="${playerCount}" placeholder="Takım sayısı"><button onclick="saveTeamCount()">Devam</button></section>`}
-function saveTeamCount(){let v=+document.querySelector('#teamCount').value;if(v<2||v>playerCount)return alert('Takım sayısı 2 ile oyuncu sayısı arasında olmalı.');teamCount=v;screen.innerHTML=`<section class="card"><h2>Oyuncular</h2>${Array.from({length:playerCount},(_,i)=>`<input class="player-name" placeholder="Oyuncu ${i+1}">`).join('')}<button onclick="savePlayers()">Puanlamaya Geç</button></section>`}
-function savePlayers(){players=[...document.querySelectorAll('.player-name')].map(x=>cap(x.value.trim())).filter(Boolean);if(players.length!==playerCount)return alert('Lütfen tüm oyuncu adlarını girin.');renderScoring()}
-function saveScoringDraft(){const w=document.querySelector('#winPoints'),b=document.querySelector('#byePoints'),ft=document.querySelector('#leagueFirstTo');if(w)winPoints=+w.value;if(b)byePoints=+b.value;if(ft)leagueFirstTo=+ft.value;const rows=[...document.querySelectorAll('.rule-row')];if(rows.length)setRules=rows.map((_,i)=>({winnerSets:+document.querySelector(`#rule-ws-${i}`).value,loserSets:+document.querySelector(`#rule-ls-${i}`).value,winnerPoints:+document.querySelector(`#rule-wp-${i}`).value,loserPoints:+document.querySelector(`#rule-lp-${i}`).value}))}
-function setScoringMode(mode){saveScoringDraft();scoringMode=mode;renderScoring()}
-function addSetRule(){saveScoringDraft();setRules.push({winnerSets:2,loserSets:0,winnerPoints:3,loserPoints:0});renderScoring()}
-function removeSetRule(i){saveScoringDraft();setRules.splice(i,1);renderScoring()}
-function renderScoring(){const bye=teamCount%2!==0;const mode=`<div class="mode-switch"><button class="${scoringMode==='win'?'selected':''}" onclick="setScoringMode('win')">Galibiyet Başı Puan</button><button class="${scoringMode==='sets'?'selected':''}" onclick="setScoringMode('sets')">Set Skoruna Göre Puan</button></div>`;const firstTo=`<label style="display:block;margin-top:12px">Maç kaç set kazanılınca biter? (First To)</label><input id="leagueFirstTo" type="number" min="1" value="${leagueFirstTo}">`;const win=`<label>Galibiyet kaç puan?</label><input id="winPoints" type="number" min="0" value="${winPoints}">${firstTo}`;const rules=`<div class="notice">Lütfen maç skoru için kuralları girin. Her kuralda önce kazananın ve kaybedenin set sayısını, ardından alacakları lig puanını yazın.</div>${setRules.map((r,i)=>`<div class="rule-row"><b>Kural ${i+1}</b><div class="rule-grid"><label>Kazanan set<input id="rule-ws-${i}" type="number" min="0" value="${r.winnerSets}"></label><label>Kaybeden set<input id="rule-ls-${i}" type="number" min="0" value="${r.loserSets}"></label><label>Kazanan puan<input id="rule-wp-${i}" type="number" min="0" value="${r.winnerPoints}"></label><label>Kaybeden puan<input id="rule-lp-${i}" type="number" min="0" value="${r.loserPoints}"></label></div>${setRules.length>1?`<button onclick="removeSetRule(${i})">Kuralı Sil</button>`:''}</div>`).join('')}<button class="secondary" onclick="addSetRule()">＋ Kural Ekle</button>${firstTo}`;screen.innerHTML=`<section class="card"><h2>Puanlama</h2><p>Takımlar kuraya çekilmeden önce puanlama modelini belirleyin.</p>${mode}${scoringMode==='win'?win:rules}${bye?`<label style="display:block;margin-top:12px">BAY geçen kaç puan?</label><input id="byePoints" type="number" min="0" value="${byePoints}">`:'<p class="notice">Takım sayısı çift olduğu için bu ligde BAY geçme yok.</p>'}<button onclick="saveScoring()">Kura Çek</button></section>`}
-function saveScoring(){saveScoringDraft();if(winPoints<0||byePoints<0||leagueFirstTo<1)return alert('Puanlar 0 veya daha büyük, First To ise en az 1 olmalı.');if(scoringMode==='sets'&&(!setRules.length||setRules.some(r=>Object.values(r).some(v=>!Number.isFinite(v)||v<0))))return alert('Lütfen tüm set kuralı alanlarını 0 veya daha büyük sayı olarak girin.');buildTeams()}
-function buildTeams(){const mixed=shuffle(players);teams=Array.from({length:teamCount},()=>[]);mixed.forEach((p,i)=>teams[i%teamCount].push(p));teams=teams.map(t=>t.join(' - '));renderTeamsPreview()}
-function renderTeamsPreview(){screen.innerHTML=`<section class="card"><h2>Takımlar</h2>${teams.map(t=>`<div class="match">${t}</div>`).join('')}<div class="mode-switch"><button class="${!doubleRound?'selected':''}" onclick="doubleRound=false;renderTeamsPreview()">Tek Karşılaşma</button><button class="${doubleRound?'selected':''}" onclick="doubleRound=true;renderTeamsPreview()">Çift Karşılaşma</button></div><div class="btn-row"><button class="secondary" onclick="buildTeams()">Tekrar Kura</button><button onclick="startLeague()">Ligi Başlat</button></div></section>`}
-function createRoundRobin(list){let a=[...list];if(a.length%2)a.push('BAY');let out=[];for(let r=0;r<a.length-1;r++){out.push(Array.from({length:a.length/2},(_,i)=>[a[i],a[a.length-1-i]]));a.splice(1,0,a.pop())}return out}
-function startLeague(){stats=Object.fromEntries(teams.map(t=>[t,{o:0,g:0,m:0,p:0,sk:0,sy:0}]));results={};byeAwarded=new Set();rounds=createRoundRobin(teams);if(doubleRound)rounds=[...rounds,...rounds.map(r=>r.map(m=>m.includes('BAY')?m:[m[1],m[0]]))];currentRound=0;renderLeague()}
-function awardBye(ri){if(byeAwarded.has(ri))return;rounds[ri].filter(m=>m.includes('BAY')).forEach(m=>stats[m.find(t=>t!=='BAY')].p+=byePoints);byeAwarded.add(ri)}
-function matchKey(ri,mi){return `${ri}-${mi}`}
-function renderNav(){return activeMatch?`<div class="match-nav"><button onclick="renderDartMatch()">🎯 Maça Dön</button><button onclick="renderLeague()">📅 Fikstür</button><button onclick="renderTable()">🏆 Puan Durumu</button></div>`:''}
-function renderLeague(){let html=renderNav()+`<section class="card"><h2>Fikstür</h2><p class="muted">İstediğiniz oynanmamış maça dokunarak dart maçını başlatın. Tur sırası zorunlu değildir.</p></section>`;rounds.forEach((round,ri)=>{html+=`<section class="card"><div class="round-title"><b>${ri+1}. Tur</b></div>`;round.forEach((m,mi)=>{if(m.includes('BAY')){html+=`<div class="match"><b>${m.find(x=>x!=='BAY')}</b> <span class="muted">(BAY: +${byePoints} puan)</span></div>`;return}const res=results[matchKey(ri,mi)], clickable=true;html+=`<div class="match ${res?'done':''} playable" onclick="${res?`askReplay(${ri},${mi})`:`openDartMatch(${ri},${mi})`}"><div class="teams"><div class="team ${res?.win===m[0]?'win':res?.lose===m[0]?'lose':''}">${m[0]}</div><div>${res?res.score:'VS'}</div><div class="team ${res?.win===m[1]?'win':res?.lose===m[1]?'lose':''}">${m[1]}</div></div></div>`});html+='</section>'});html+=`<button onclick="renderTable()">Puan Durumu</button>`;screen.innerHTML=html}
-function renderTable(){let rows=Object.entries(stats).sort((a,b)=>b[1].p-a[1].p||b[1].g-a[1].g||(b[1].sk-b[1].sy)-(a[1].sk-a[1].sy)||a[0].localeCompare(b[0],'tr'));screen.innerHTML=renderNav()+`<section class="card"><h2>Puan Durumu</h2><div class="standings"><div class="standing-header"><div>#</div><div>Takım</div><div>O</div><div>G</div><div>M</div><div>Set</div><div>P</div></div>${rows.map(([t,s],i)=>`<div class="standing-row"><div>${i+1}</div><div class="standing-team">${t}</div><div>${s.o}</div><div>${s.g}</div><div>${s.m}</div><div>${s.sk}-${s.sy}</div><div class="points">${s.p}</div></div>`).join('')}</div><button class="secondary" onclick="renderLeague()">Fikstüre Dön</button></section>`}
+  /* =====================================================================
+     SES (Web Audio ile üretilir; dosya yok)
+     ===================================================================== */
+  const SND = (() => {
+    let ctx = null;
+    let out = null;
+    let verb = null;
+    let on = true;
+    function make() {
+      if (ctx) return ctx;
+      const AC = root.AudioContext || root.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -14;
+      comp.ratio.value = 3;
+      comp.connect(ctx.destination);
+      out = ctx.createGain();
+      out.gain.value = 0.9;
+      out.connect(comp);
+      try {
+        verb = ctx.createConvolver();
+        const len = Math.floor(ctx.sampleRate * 0.8);
+        const b = ctx.createBuffer(2, len, ctx.sampleRate);
+        for (let ch = 0; ch < 2; ch++) {
+          const d = b.getChannelData(ch);
+          for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2);
+        }
+        verb.buffer = b;
+        const vg = ctx.createGain();
+        vg.gain.value = 0.14;
+        verb.connect(vg);
+        vg.connect(comp);
+      } catch (e) {
+        verb = null;
+      }
+      return ctx;
+    }
+    const dst = (wet) => (wet && verb ? [out, verb] : [out]);
+    function noise(c, dur, freq, q, gain, delay, type, wet) {
+      const t = c.currentTime + (delay || 0);
+      const len = Math.max(1, Math.floor(c.sampleRate * dur));
+      const buf = c.createBuffer(1, len, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
+      const src = c.createBufferSource();
+      src.buffer = buf;
+      const f = c.createBiquadFilter();
+      f.type = type || 'bandpass';
+      f.frequency.value = freq;
+      f.Q.value = q || 1;
+      const g = c.createGain();
+      g.gain.value = gain;
+      src.connect(f);
+      f.connect(g);
+      dst(wet).forEach((x) => g.connect(x));
+      src.start(t);
+    }
+    function tone(c, freq, dur, gain, type, delay, slide, wet) {
+      const o = c.createOscillator();
+      const g = c.createGain();
+      const t = c.currentTime + (delay || 0);
+      o.type = type || 'sine';
+      o.frequency.setValueAtTime(freq, t);
+      if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq * slide), t + dur);
+      g.gain.setValueAtTime(1e-4, t);
+      g.gain.exponentialRampToValueAtTime(gain, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(1e-4, t + dur);
+      o.connect(g);
+      dst(wet !== false).forEach((x) => g.connect(x));
+      o.start(t);
+      o.stop(t + dur + 0.05);
+    }
+    const knock = (c, f, dur, gain, delay, wet) => {
+      noise(c, dur, f, 3.5, gain, delay, 'bandpass', wet);
+      tone(c, f * 0.42, 0.09, gain * 0.45, 'sine', delay, 0.7, wet);
+    };
+    const S = {
+      tap: (c) => knock(c, 2400, 0.04, 0.25),
+      click: (c) => knock(c, 3000, 0.03, 0.2),
+      select: (c) => tone(c, 880, 0.08, 0.05, 'triangle'),
+      flick: (c) => noise(c, 0.07, 2600, 0.8, 0.35, 0, 'highpass'),
+      card: (c) => {
+        noise(c, 0.09, 1800, 0.7, 0.5, 0, 'bandpass', true);
+        knock(c, 1500, 0.05, 0.25, 0.04, true);
+      },
+      deal: (c) => noise(c, 0.06, 3200, 0.9, 0.3, 0, 'highpass'),
+      shuffle: (c) => {
+        for (let i = 0; i < 9; i++) noise(c, 0.05, 2000 + Math.random() * 1500, 1, 0.22, i * 0.045);
+      },
+      place: (c) => knock(c, 1250, 0.07, 0.5, 0, true),
+      clack: (c) => knock(c, 3400, 0.03, 0.55, 0, true),
+      thud: (c) => {
+        tone(c, 120, 0.18, 0.5, 'sine', 0, 0.5);
+        noise(c, 0.08, 400, 1, 0.4, 0, 'lowpass');
+      },
+      roll: (c) => {
+        for (let i = 0; i < 7; i++) knock(c, 1800 + Math.random() * 1600, 0.05, 0.22, i * 0.065 + Math.random() * 0.02, i > 4);
+      },
+      bounce: (c) => {
+        knock(c, 2300, 0.05, 0.42, 0, true);
+        knock(c, 2650, 0.045, 0.34, 0.035, true);
+      },
+      pop: (c) => tone(c, 520, 0.09, 0.08, 'sine', 0, 1.9),
+      whoosh: (c) => noise(c, 0.28, 900, 0.6, 0.35, 0, 'bandpass'),
+      coin: (c) => {
+        tone(c, 1318, 0.09, 0.06, 'square', 0);
+        tone(c, 1760, 0.22, 0.06, 'square', 0.07);
+      },
+      ding: (c) => tone(c, 1568, 0.5, 0.07, 'sine'),
+      tick: (c) => tone(c, 1200, 0.04, 0.04, 'square'),
+      turn: (c) => {
+        tone(c, 784, 0.18, 0.05);
+        tone(c, 1175, 0.24, 0.045, 'sine', 0.08);
+      },
+      error: (c) => tone(c, 200, 0.14, 0.06, 'sawtooth'),
+      correct: (c) => [784, 988, 1318].forEach((f, i) => tone(c, f, 0.22, 0.07, 'triangle', i * 0.07)),
+      wrong: (c) => {
+        tone(c, 330, 0.25, 0.08, 'sawtooth', 0, 0.6);
+        tone(c, 220, 0.35, 0.07, 'sawtooth', 0.12, 0.6);
+      },
+      win: (c) => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(c, f, 0.55, 0.08, 'triangle', 0.12 * i)),
+      lose: (c) => [392, 349, 311, 262].forEach((f, i) => tone(c, f, 0.5, 0.06, 'triangle', 0.16 * i)),
+      kick: (c) => {
+        tone(c, 160, 0.12, 0.6, 'sine', 0, 0.4);
+        noise(c, 0.06, 900, 1, 0.5);
+      },
+      whistle: (c) => {
+        tone(c, 2900, 0.35, 0.05, 'sine', 0, 1.02, false);
+        tone(c, 3050, 0.35, 0.03, 'square', 0, 1.02, false);
+      },
+      cheer: (c) => {
+        for (let i = 0; i < 6; i++) noise(c, 0.9, 700 + i * 260, 0.5, 0.12, i * 0.05, 'bandpass', true);
+      },
+      groan: (c) => noise(c, 0.8, 300, 0.7, 0.3, 0, 'lowpass', true),
+      splash: (c) => {
+        noise(c, 0.45, 1200, 0.5, 0.5, 0, 'highpass', true);
+        noise(c, 0.3, 500, 0.6, 0.3, 0.05, 'bandpass', true);
+      },
+      boom: (c) => {
+        tone(c, 90, 0.6, 0.7, 'sine', 0, 0.35);
+        noise(c, 0.7, 300, 0.6, 0.6, 0, 'lowpass', true);
+      },
+      buzz: (c) => tone(c, 140, 0.4, 0.09, 'square', 0, 0.98),
+      stone: (c) => knock(c, 2000 + Math.random() * 600, 0.05, 0.3, 0, true),
+      puck: (c) => knock(c, 2800, 0.035, 0.5, 0, false),
+      goal: (c) => {
+        noise(c, 0.5, 1500, 0.4, 0.4, 0, 'bandpass', true);
+        [523, 784, 1047].forEach((f, i) => tone(c, f, 0.35, 0.06, 'square', 0.05 + i * 0.09));
+      },
+    };
+    return {
+      play(k) {
+        if (!on || !S[k]) return;
+        try {
+          const c = make();
+          if (!c) return;
+          if (c.state !== 'running') c.resume().catch(() => {});
+          S[k](c);
+        } catch (e) {}
+      },
+      setOn(v) {
+        on = !!v;
+      },
+      get on() {
+        return on;
+      },
+      unlock() {
+        try {
+          const c = make();
+          if (c && c.state !== 'running') c.resume().catch(() => {});
+        } catch (e) {}
+      },
+    };
+  })();
+  const haptic = (ms) => {
+    try {
+      if (root.navigator && root.navigator.vibrate) root.navigator.vibrate(ms || 20);
+    } catch (e) {}
+  };
 
-function openDartMatch(ri,mi){activeMatch={ri,mi,teams:rounds[ri][mi]};dart={mode:'karambol',numbers:[],firstTo:leagueFirstTo,scores:[],points:[0,0],history:[],actions:[],ended:false};renderDartMatch()}
-function renderDartMatch(){if(!activeMatch)return renderLeague();let header=renderNav()+`<section class="card"><h2>🎯 Dart Maçı</h2>`;if(!dart.numbers.length){screen.innerHTML=header+`<p class="notice">Bu maçın sonucu tamamlanınca otomatik olarak fikstüre işlenecek.</p><p class="muted">Bu lig için belirlenen First To: <b>${dart.firstTo}</b></p><h3>Oyun Modu</h3><div class="mode-switch"><button class="${dart.mode==='karambol'?'selected':''}" onclick="dart.mode='karambol';renderDartMatch()">Karambol Kriket</button><button class="${dart.mode==='kriket'?'selected':''}" onclick="dart.mode='kriket';renderDartMatch()">Kriket (15–20)</button></div><button onclick="startDartGame()">Maçı Başlat</button><button class="secondary" onclick="cancelDartMatch()">Başlamadan Fikstüre Dön</button></section>`;return}screen.innerHTML=header+`<p class="muted">First To ${dart.firstTo}</p><div id="board" class="board"></div><div class="controls"><button class="info" onclick="showDartInfo()" title="İşlem geçmişi">i</button><button class="undo" onclick="undoDart()">⬅ Geri Al</button><button onclick="confirmDartReset()">Sıfırla</button></div></section>`;renderBoard()}
-function cancelDartMatch(){activeMatch=null;renderLeague()}
-function startDartGame(){dart.numbers=dart.mode==='karambol'?['20','19','18','17','16','15','14','13','12','D','T','B','H']:['20','19','18','17','16','15','B'];dart.scores=Array.from({length:2},()=>Array(dart.numbers.length).fill(0));renderDartMatch()}
-function renderBoard(){const board=document.querySelector('#board'),[a,b]=activeMatch.teams;const narrow=window.innerWidth<=600,headerHeight=narrow?52:60,reserved=narrow?220:210,rowHeight=Math.max(narrow?32:42,Math.min(64,Math.floor((window.innerHeight-reserved-headerHeight)/dart.numbers.length)));board.style.gridTemplateColumns=`1fr ${narrow?46:60}px 1fr`;board.style.setProperty('--header-height',`${headerHeight}px`);board.style.setProperty('--row-height',`${rowHeight}px`);let mark=v=>v===0?'':v===1?'/':v===2?'X':'<span class="mark">X</span>';board.innerHTML=`<div class="board-header" style="grid-template-columns:inherit"><div class="cell team-header">${a}<span>${dart.points[0]}</span></div><div class="cell score-label"></div><div class="cell team-header">${b}<span>${dart.points[1]}</span></div></div>`+dart.numbers.map((n,r)=>`<div class="board-row" style="grid-template-columns:inherit"><div class="cell dart-cell" onclick="dartHit(0,${r})">${mark(dart.scores[0][r])}</div><div class="cell score-label">${n}</div><div class="cell dart-cell" onclick="dartHit(1,${r})">${mark(dart.scores[1][r])}</div></div>`).join('')}
-function dartHit(t,r){if(dart.ended||dart.scores[t][r]===3)return;dart.history.push({t,r,prev:dart.scores[t][r]});dart.actions.unshift({type:'add',t,r,time:Date.now()});dart.scores[t][r]++;renderBoard();if(dart.scores[t].every(x=>x===3)){dart.points[t]++;if(dart.points[t]>=dart.firstTo){dart.ended=true;showWinner(t)}else{dart.scores=Array.from({length:2},()=>Array(dart.numbers.length).fill(0));dart.history=[];renderBoard();showMessage(`<h2>${activeMatch.teams[t]} seti kazandı</h2><p>Yeni set başladı.</p>`,true)}}}
-function undoDart(){let h=dart.history.pop();if(!h||dart.ended)return;dart.scores[h.t][h.r]=h.prev;dart.actions.unshift({type:'undo',t:h.t,r:h.r,time:Date.now()});renderBoard()}
-function showDartInfo(){const recent=dart.actions.slice(0,80);modalBox.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><h2 style="margin:0">📜 İşlem Geçmişi</h2><button class="secondary" style="width:auto;margin:0;padding:7px 12px" onclick="closeModal()">✕</button></div>${recent.length?recent.map(a=>`<div style="display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #334155;padding:10px 0;text-align:left;color:${a.type==='add'?'#22c55e':'#ef4444'}"><span>${a.type==='add'?'＋':'−'} ${activeMatch.teams[a.t]} · ${dart.numbers[a.r]} ${a.type==='add'?'eklendi':'geri alındı'}</span><span class="muted">${new Date(a.time).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</span></div>`).join(''):'<p class="muted">Henüz işlem yok.</p>'}<button class="secondary" onclick="closeModal()">Kapat</button>`;modal.classList.remove('hidden')}
-function confirmDartReset(){showMessage('<h2>Maç sıfırlansın mı?</h2><div class="btn-row"><button onclick="resetDart()">Sıfırla</button><button class="secondary" onclick="closeModal()">Vazgeç</button></div>')}
-function resetDart(){closeModal();dart.scores=Array.from({length:2},()=>Array(dart.numbers.length).fill(0));dart.points=[0,0];dart.history=[];renderBoard()}
-function showMessage(html,auto=false){modalBox.innerHTML=html;modal.classList.remove('hidden');if(auto)setTimeout(closeModal,1300)}function closeModal(){modal.classList.add('hidden')}
-function showWinner(t){const name=activeMatch.teams[t];modalBox.innerHTML=`<div class="cup">🏆</div><h2>${name}<br>maçı kazandı</h2><p>Sonuç: ${dart.points[0]} - ${dart.points[1]}</p><button onclick="recordDartWinner(${t})">Sonucu Fikstüre İşle</button>`;modal.classList.remove('hidden')}
-function getLeaguePoints(winSets,loseSets){if(scoringMode==='win')return [winPoints,0];const rule=setRules.find(r=>r.winnerSets===winSets&&r.loserSets===loseSets);return rule?[rule.winnerPoints,rule.loserPoints]:null}
-function recordDartWinner(winnerIndex){if(!activeMatch)return;const {ri,mi,teams:pair}=activeMatch,key=matchKey(ri,mi);if(results[key])return;const win=pair[winnerIndex],lose=pair[1-winnerIndex],winSets=dart.points[winnerIndex],loseSets=dart.points[1-winnerIndex],leaguePoints=getLeaguePoints(winSets,loseSets);if(!leaguePoints)return alert(`${winSets}-${loseSets} sonucu için puan kuralı bulunamadı. Bu maç lig sonucuna işlenemedi.`);const [winnerLeaguePoints,loserLeaguePoints]=leaguePoints;results[key]={win,lose,score:`${dart.points[0]}-${dart.points[1]}`,winnerLeaguePoints,loserLeaguePoints};stats[win].o++;stats[win].g++;stats[win].p+=winnerLeaguePoints;stats[lose].o++;stats[lose].m++;stats[lose].p+=loserLeaguePoints;stats[win].sk+=winSets;stats[win].sy+=loseSets;stats[lose].sk+=loseSets;stats[lose].sy+=winSets;if(rounds[ri].every((m,index)=>m.includes('BAY')||results[matchKey(ri,index)]))awardBye(ri);closeModal();activeMatch=null;const leagueFinished=rounds.every((round,roundIndex)=>round.every((m,matchIndex)=>m.includes('BAY')||results[matchKey(roundIndex,matchIndex)]));if(leagueFinished)return renderChampion();renderLeague()}
-function askReplay(ri,mi){const m=rounds[ri][mi];modalBox.innerHTML=`<h2>Bu maç tamamlandı</h2><p><b>${m[0]}</b> – <b>${m[1]}</b></p><p>Maçı tekrar oynamak istiyor musunuz? Eski sonuç ve puanlar silinecek.</p><div class="btn-row"><button onclick="resetCompletedMatch(${ri},${mi})">Evet, tekrar oyna</button><button class="secondary" onclick="closeModal()">Hayır</button></div>`;modal.classList.remove('hidden')}
-function resetCompletedMatch(ri,mi){const key=matchKey(ri,mi),res=results[key],pair=rounds[ri][mi];if(!res)return closeModal();const [leftScore,rightScore]=res.score.split('-').map(Number);const winScore=res.win===pair[0]?leftScore:rightScore,loseScore=res.lose===pair[0]?leftScore:rightScore;stats[res.win].o--;stats[res.win].g--;stats[res.win].p-=res.winnerLeaguePoints;stats[res.lose].o--;stats[res.lose].m--;stats[res.lose].p-=res.loserLeaguePoints;stats[res.win].sk-=winScore;stats[res.win].sy-=loseScore;stats[res.lose].sk-=loseScore;stats[res.lose].sy-=winScore;delete results[key];if(byeAwarded.has(ri)){rounds[ri].filter(m=>m.includes('BAY')).forEach(m=>stats[m.find(t=>t!=='BAY')].p-=byePoints);byeAwarded.delete(ri)}closeModal();renderLeague()}
-function renderChampion(){const winner=Object.entries(stats).sort((a,b)=>b[1].p-a[1].p||b[1].g-a[1].g)[0][0];screen.innerHTML=`<section class="card" style="text-align:center"><div class="cup">🏆</div><h2>Şampiyon</h2><div class="points" style="font-size:28px">${winner}</div><button onclick="renderTable()">Puan Durumu</button><button class="secondary" onclick="location.reload()">Yeni Lig</button></section>`}
-renderPlayerCount();
-</script></body></html>
+  /* =====================================================================
+     SİMGELER
+     ===================================================================== */
+  const ICONS = {
+    menu: '<line x1="4" x2="20" y1="7" y2="7"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="17" y2="17"/>',
+    home: '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    vol: '<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/>',
+    mute: '<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/>',
+    book: '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+    play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+    again: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+    x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    bot: '<path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>',
+    trophy: '<path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"/><path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"/><path d="M18 9h1.5a1 1 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6 9H4.5a1 1 0 0 1 0-5H6"/>',
+    grid: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+    mic: '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>',
+    undo: '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>',
+    rotate: '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>',
+    shuffle: '<path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/>',
+  };
+  const icon = (k, s, sw) => `<svg width="${s || 20}" height="${s || 20}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw || 2}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k] || ''}</svg>`;
+
+  /* =====================================================================
+     BİLDİRİM, PENCERE, KUTLAMA
+     ===================================================================== */
+  function layer(cls) {
+    let n = $('.' + cls);
+    if (!n) {
+      n = el(`<div class="${cls}"></div>`);
+      doc.body.appendChild(n);
+    }
+    return n;
+  }
+  function toast(text, kind, ms) {
+    const box = layer('bz-toasts');
+    const t = el(`<div class="bz-toast ${kind || ''}">${text}</div>`);
+    box.appendChild(t);
+    while (box.children.length > 3) box.firstElementChild.remove();
+    setTimeout(() => t.classList.add('out'), ms || 2200);
+    setTimeout(() => t.remove(), (ms || 2200) + 320);
+  }
+  /** Pencere: html içinde data-m="..." düğmeleri onAction(m) çağırır; dönüş: kapatma işlevi */
+  function modal(html, onAction, opts) {
+    opts = opts || {};
+    const box = layer('bz-modals');
+    const w = el(`<div class="bz-mwrap"${opts.name ? ` data-modal="${opts.name}"` : ''}><div class="bz-mbox ${opts.cls || ''}" role="dialog" aria-modal="true">${html}</div></div>`);
+    const close = () => w.remove();
+    w.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-m]');
+      if (b) {
+        SND.play('tap');
+        const r = onAction ? onAction(b.dataset.m, close, b) : null;
+        if (r !== false && b.dataset.keep == null) close();
+        return;
+      }
+      if (e.target === w && opts.dismiss !== false) {
+        close();
+        if (opts.onDismiss) opts.onDismiss();
+      }
+    });
+    box.appendChild(w);
+    const f = w.querySelector('[data-m].gold, [data-m]');
+    if (f && !opts.noFocus) setTimeout(() => f.focus({ preventScroll: true }), 30);
+    return close;
+  }
+  const closeModals = () => $$('.bz-modals .bz-mwrap').forEach((n) => n.remove());
+  const hasModal = () => !!$('.bz-modals .bz-mwrap');
+  function banner(title, sub, good, ms) {
+    const b = el(`<div class="bz-banner${good === false ? ' bad' : ''}"><b>${title}</b>${sub ? `<span>${sub}</span>` : ''}</div>`);
+    doc.body.appendChild(b);
+    const t = ms || 1700;
+    setTimeout(() => b.classList.add('out'), t);
+    setTimeout(() => b.remove(), t + 400);
+  }
+  function confetti(n, colors) {
+    if (reduceMotion) return;
+    const box = el('<div class="bz-confetti" aria-hidden="true"></div>');
+    const cs = colors || ['#f8e2a4', '#e2bf6e', '#ec5a5f', '#4fd690', '#63a6ff', '#ffffff'];
+    let h = '';
+    for (let i = 0; i < (n || 90); i++) {
+      const left = Math.random() * 100;
+      const dur = 1.8 + Math.random() * 1.8;
+      h += `<i style="left:${left}vw;background:${cs[i % cs.length]};--dx:${Math.round((Math.random() - 0.5) * 240)}px;--rot:${Math.round(Math.random() * 1080 - 540)}deg;animation-duration:${dur}s;animation-delay:${Math.random() * 0.5}s"></i>`;
+    }
+    box.innerHTML = h;
+    doc.body.appendChild(box);
+    setTimeout(() => box.remove(), 4200);
+  }
+
+  /* =====================================================================
+     EKRANLAR
+     ===================================================================== */
+  /** Başlangıç ekranı. cfg: { root, key, title, tagline, chips, art, options:[{key,label,choices:[[v,label]]}],
+      settings (kalıcı nesne), actions:[{id,label,kind,icon}], onAction(id), rules } */
+  function startScreen(cfg) {
+    const s = cfg.settings;
+    const seg = (o) =>
+      `<div class="bz-seg" role="group" aria-label="${esc(o.label)}">${o.choices
+        .map(([v, l]) => `<button type="button" data-k="${o.key}" data-v="${esc(v)}" aria-pressed="${String(s[o.key]) === String(v)}">${l}</button>`)
+        .join('')}</div>`;
+    const opts = (cfg.options || []).filter((o) => !o.when || o.when(s));
+    cfg.root.innerHTML = `<div class="bz-start"><div class="bz-start-in">
+      <div class="bz-top"><a class="bz-brand" href="../index.html" title="Oyun vitrinine dön">${icon('grid', 18)}<span><b>BÖZER</b> GAMING</span></a>
+        <button class="bz-ib" data-a="snd" aria-label="Ses">${icon(SND.on ? 'vol' : 'mute', 20)}</button></div>
+      <section class="bz-hero"><div><h1>${cfg.title}</h1><p>${cfg.tagline}</p><div class="bz-chips">${(cfg.chips || []).map((c) => `<span class="bz-chip">${c}</span>`).join('')}</div></div>
+        <div class="bz-art" aria-hidden="true">${cfg.art || ''}</div></section>
+      <section class="bz-panel"><h2>Oyun ayarları</h2><div class="bz-opts">
+        ${opts.map((o) => `<div class="bz-opt"><span>${o.label}</span>${o.input ? o.input(s) : seg(o)}</div>`).join('')}
+      </div>
+      <div class="bz-acts">${(cfg.actions || []).map((a) => `<button class="bz-btn ${a.kind || ''}" data-go="${a.id}">${a.icon ? icon(a.icon, 18) : ''}${a.label}</button>`).join('')}
+        <button class="bz-btn ghost" data-go="rules">${icon('book', 17)} Nasıl oynanır</button></div></section>
+    </div></div>`;
+    cfg.root.onclick = (e) => {
+      SND.unlock();
+      const b = e.target.closest('button');
+      if (!b) return;
+      if (b.dataset.a === 'snd') {
+        SND.setOn(!SND.on);
+        s.sound = SND.on;
+        if (cfg.save) cfg.save();
+        b.innerHTML = icon(SND.on ? 'vol' : 'mute', 20);
+        return;
+      }
+      if (b.dataset.k) {
+        const o = (cfg.options || []).find((x) => x.key === b.dataset.k);
+        const raw = b.dataset.v;
+        const v = o && o.choices.find(([x]) => String(x) === raw);
+        s[b.dataset.k] = v ? v[0] : raw;
+        if (cfg.onChange) cfg.onChange(b.dataset.k, s[b.dataset.k], s);
+        if (cfg.save) cfg.save();
+        SND.play('select');
+        return startScreen(cfg);
+      }
+      if (b.dataset.go === 'rules') return showRules(cfg.title, cfg.rules);
+      if (b.dataset.go) {
+        SND.play('tap');
+        cfg.onAction(b.dataset.go);
+      }
+    };
+    cfg.root.oninput = (e) => {
+      if (e.target.dataset.in) {
+        s[e.target.dataset.in] = e.target.value;
+        if (cfg.save) cfg.save();
+      }
+    };
+  }
+  function showRules(title, html) {
+    modal(`<h2>${title} · Kurallar</h2><div class="bz-rules">${html}</div><div class="bz-acts"><button class="bz-btn gold" data-m="ok">Anladım</button></div>`);
+  }
+  /** Üst çubuk. cfg: { root, title, sub, onMenu, right } → { sub(t), msg(t, cls) } */
+  function hud(cfg) {
+    cfg.root.innerHTML = `<button class="bz-ib" data-a="menu" aria-label="Menü">${icon('menu', 20)}</button>
+      <div class="bz-hud-t"><b>${cfg.title}</b><span data-sub>${cfg.sub || ''}</span></div>
+      <div class="bz-hud-mid"><span class="bz-msg" data-msg hidden></span></div>
+      ${cfg.right || ''}<button class="bz-ib" data-a="snd" aria-label="Ses">${icon(SND.on ? 'vol' : 'mute', 20)}</button>`;
+    cfg.root.onclick = (e) => {
+      SND.unlock();
+      const b = e.target.closest('[data-a]');
+      if (!b) return;
+      if (b.dataset.a === 'menu') return cfg.onMenu && cfg.onMenu();
+      if (b.dataset.a === 'snd') {
+        SND.setOn(!SND.on);
+        if (cfg.onSound) cfg.onSound(SND.on);
+        b.innerHTML = icon(SND.on ? 'vol' : 'mute', 20);
+        return;
+      }
+      if (cfg.onAction) cfg.onAction(b.dataset.a, b);
+    };
+    const m = $('[data-msg]', cfg.root);
+    return {
+      sub: (t) => ($('[data-sub]', cfg.root).textContent = t),
+      msg(t, cls) {
+        m.hidden = !t;
+        m.className = 'bz-msg ' + (cls || '');
+        m.textContent = t || '';
+      },
+    };
+  }
+  /** Oyun menüsü: devam, kurallar, yeniden başlat, ana menü, vitrin */
+  function gameMenu(o) {
+    modal(
+      `<h2>Menü</h2><div class="bz-acts" style="flex-direction:column;align-items:stretch;justify-content:flex-start">
+        <button class="bz-btn gold" data-m="resume">${icon('play', 17)} Devam et</button>
+        <button class="bz-btn" data-m="rules">${icon('book', 17)} Kurallar</button>
+        ${o.extra || ''}
+        <button class="bz-btn" data-m="restart">${icon('again', 17)} Yeniden başlat</button>
+        <button class="bz-btn" data-m="home">${icon('home', 17)} Oyun ayarlarına dön</button>
+        <a class="bz-btn ghost" href="../index.html" style="text-decoration:none">${icon('grid', 17)} Bütün oyunlar</a></div>`,
+      (m) => {
+        if (m === 'rules') return showRules(o.title, o.rules);
+        if (o.onAction) o.onAction(m);
+      },
+    );
+  }
+  /** Sonuç penceresi. rows: [{name, val, me, win}] */
+  function results(o) {
+    const medal = (i) => ['🥇', '🥈', '🥉'][i] || i + 1 + '.';
+    let place = 0;
+    const rows = o.rows
+      .map((r, i) => {
+        if (i > 0 && r.val !== o.rows[i - 1].val) place = i;
+        return `<li class="${r.win ? 'win' : ''}${r.me ? ' me' : ''}"><span>${o.noMedal ? i + 1 + '.' : medal(o.tiePlaces === false ? i : place)}</span><b>${esc(r.name)}</b><i>${r.label != null ? r.label : r.val}</i></li>`;
+      })
+      .join('');
+    modal(
+      `<div style="text-align:center">${icon('trophy', 40, 1.6)}</div><h2 style="text-align:center">${o.title}</h2>${o.sub ? `<p style="text-align:center">${o.sub}</p>` : ''}
+       <ol class="bz-res">${rows}</ol>${o.extra || ''}
+       <div class="bz-acts"><button class="bz-btn" data-m="home">${icon('home', 17)} Ayarlar</button><button class="bz-btn gold" data-m="again">${icon('again', 17)} Tekrar oyna</button></div>`,
+      (m) => {
+        if (m === 'again' && o.onAgain) o.onAgain();
+        if (m === 'home' && o.onHome) o.onHome();
+      },
+      { name: 'results', dismiss: false },
+    );
+  }
+
+  /* =====================================================================
+     ÜÇ BOYUTLU ZAR
+     ===================================================================== */
+  const PIPS = { 1: [5], 2: [3, 7], 3: [3, 5, 7], 4: [1, 3, 7, 9], 5: [1, 3, 5, 7, 9], 6: [1, 3, 4, 6, 7, 9] };
+  const FACE_ROT = { 1: [0, 0], 2: [0, -90], 3: [-90, 0], 4: [90, 0], 5: [0, 90], 6: [0, 180] };
+  const faceHTML = (v) => `<div class="f f${v}">${Array.from({ length: 9 }, (_, i) => `<i class="${PIPS[v].indexOf(i + 1) >= 0 ? 'on' : ''}"></i>`).join('')}</div>`;
+  const dieRot = (v, z, tx, ty) => `rotateZ(${z || 0}deg) rotateX(${FACE_ROT[v][0] + (tx || 0)}deg) rotateY(${FACE_ROT[v][1] + (ty || 0)}deg)`;
+  /** Zar öğesi (v: 1..6; v boşsa rastgele duruş) */
+  function dieHTML(v, size, z, cls) {
+    v = v || 1;
+    return `<div class="bz-die ${cls || ''}" data-v="${v}" style="--ds:${size || 52}px"><div class="sh"></div><div class="cube" style="transform:${dieRot(v, z || 0)}">${[1, 2, 3, 4, 5, 6].map(faceHTML).join('')}</div></div>`;
+  }
+  function setDie(node, v, z) {
+    node.dataset.v = v;
+    $('.cube', node).style.transform = dieRot(v, z || 0);
+  }
+  /**
+   * Zar at: node'lar yerinde durur, dx/dy kadar öteden dönerek gelip seker ve v değerinde oturur.
+   * o: { from: {x, y} (piksel ofset), dur }
+   */
+  function rollDice(nodes, values, o) {
+    o = o || {};
+    const T = reduceMotion ? 1 : o.dur || 950;
+    SND.play('roll');
+    if (T < 50 || !nodes[0] || !nodes[0].animate) {
+      nodes.forEach((n, i) => setDie(n, values[i], o.z ? o.z[i] : 0));
+      return Promise.resolve();
+    }
+    nodes.forEach((n, i) => {
+      const v = values[i];
+      const z = o.z ? o.z[i] : Math.round((Math.random() - 0.5) * 30);
+      const fx = (o.from ? o.from.x : 0) + (Math.random() - 0.5) * 60;
+      const fy = (o.from ? o.from.y : 120) + (Math.random() - 0.5) * 30;
+      const lag = i * 0.04;
+      const k = (f) => Math.min(1, lag + f * (1 - lag));
+      n.animate(
+        [
+          { transform: `translate(${fx}px, ${fy}px) scale(1.5)`, offset: 0, easing: 'cubic-bezier(.35,0,.75,.45)' },
+          { transform: `translate(${fx * 0.3}px, ${fy * 0.22}px) scale(1)`, offset: k(0.42), easing: 'cubic-bezier(.2,.6,.4,1)' },
+          { transform: `translate(${fx * 0.14}px, ${fy * 0.1}px) scale(1.15)`, offset: k(0.57), easing: 'cubic-bezier(.5,0,.8,.5)' },
+          { transform: `translate(${fx * 0.05}px, ${fy * 0.035}px) scale(1)`, offset: k(0.73), easing: 'cubic-bezier(.2,.6,.4,1)' },
+          { transform: 'translate(0, 0) scale(1)', offset: 1 },
+        ],
+        { duration: T, fill: 'both' },
+      );
+      const sx = 360 * (2 + Math.floor(Math.random() * 2)) * (Math.random() < 0.5 ? -1 : 1);
+      const sy = 360 * (1 + Math.floor(Math.random() * 2)) * (Math.random() < 0.5 ? -1 : 1);
+      const cube = $('.cube', n);
+      cube.animate(
+        [
+          { transform: `rotateZ(${z + (Math.random() - 0.5) * 280}deg) rotateX(${FACE_ROT[v][0] + sx}deg) rotateY(${FACE_ROT[v][1] + sy}deg)` },
+          { transform: dieRot(v, z), offset: 0.86 },
+          { transform: dieRot(v, z) },
+        ],
+        { duration: T, easing: 'cubic-bezier(.18,.62,.28,1)', fill: 'both' },
+      );
+      cube.style.transform = dieRot(v, z);
+      n.dataset.v = v;
+    });
+    setTimeout(() => SND.play('bounce'), T * 0.42);
+    setTimeout(() => SND.play('bounce'), T * 0.73);
+    return sleep(T + 20);
+  }
+
+  /* =====================================================================
+     İSKAMBİL (özgün çizim: köşe indeksleri, pip dizilimi, özgün saray kartları)
+     ===================================================================== */
+  const SUITS = ['S', 'H', 'D', 'C'];
+  const SUIT_NAME = { S: 'Maça', H: 'Kupa', D: 'Karo', C: 'Sinek' };
+  const SUIT_SYM = { S: '♠', H: '♥', D: '♦', C: '♣' };
+  const RANK = (r) => (r === 1 || r === 14 ? 'A' : r === 11 ? 'J' : r === 12 ? 'Q' : r === 13 ? 'K' : String(r));
+  const isRed = (s) => s === 'H' || s === 'D';
+  const SUIT_PATH = {
+    H: '<path d="M50 90 C22 66 6 48 6 30 C6 15 17 5 30 5 C40 5 47 11 50 19 C53 11 60 5 70 5 C83 5 94 15 94 30 C94 48 78 66 50 90 Z"/>',
+    D: '<path d="M50 3 L88 50 L50 97 L12 50 Z"/>',
+    S: '<path d="M50 4 C41 22 7 38 7 61 C7 75 17 84 30 84 C38 84 44 80 47 74 C46 84 42 90 33 96 L67 96 C58 90 54 84 53 74 C56 80 62 84 70 84 C83 84 93 75 93 61 C93 38 59 22 50 4 Z"/>',
+    C: '<circle cx="50" cy="28" r="20"/><circle cx="27" cy="60" r="20"/><circle cx="73" cy="60" r="20"/><path d="M45 50 L55 50 C55 75 60 87 68 96 L32 96 C40 87 45 75 45 50 Z"/>',
+  };
+  const PIP_POS = {
+    1: [[125, 175, 2.2]],
+    2: [[125, 78], [125, 272]],
+    3: [[125, 78], [125, 175], [125, 272]],
+    4: [[78, 78], [172, 78], [78, 272], [172, 272]],
+    5: [[78, 78], [172, 78], [125, 175], [78, 272], [172, 272]],
+    6: [[78, 78], [172, 78], [78, 175], [172, 175], [78, 272], [172, 272]],
+    7: [[78, 78], [172, 78], [125, 126], [78, 175], [172, 175], [78, 272], [172, 272]],
+    8: [[78, 78], [172, 78], [125, 126], [78, 175], [172, 175], [125, 224], [78, 272], [172, 272]],
+    9: [[78, 78], [172, 78], [78, 143], [172, 143], [125, 175], [78, 207], [172, 207], [78, 272], [172, 272]],
+    10: [[78, 78], [172, 78], [125, 110], [78, 143], [172, 143], [78, 207], [172, 207], [125, 240], [78, 272], [172, 272]],
+  };
+  const suitUse = (s, x, y, sz, flip, col) =>
+    `<g transform="translate(${x - sz / 2} ${y - sz / 2}) ${flip ? `rotate(180 ${sz / 2} ${sz / 2})` : ''} scale(${sz / 100})" fill="${col}">${SUIT_PATH[s]}</g>`;
+  const COURT = {
+    11: (c) => `<path d="M125 112 l10 40 h-20 z" fill="${c}" opacity=".85"/><rect x="117" y="150" width="16" height="70" rx="3" fill="${c}" opacity=".85"/><rect x="100" y="146" width="50" height="8" rx="4" fill="#c9a24b"/>`,
+    12: (c) => `<path d="M95 150 q30 -55 60 0 q-30 -18 -60 0z" fill="${c}" opacity=".85"/><circle cx="125" cy="118" r="9" fill="#c9a24b"/><path d="M98 156h54" stroke="#c9a24b" stroke-width="6" stroke-linecap="round"/>`,
+    13: (c) => `<path d="M92 158 l8 -42 l18 22 l7 -30 l7 30 l18 -22 l8 42 z" fill="#c9a24b" stroke="${c}" stroke-width="3" stroke-linejoin="round"/><circle cx="100" cy="114" r="5" fill="${c}"/><circle cx="150" cy="114" r="5" fill="${c}"/><circle cx="125" cy="84" r="5" fill="${c}"/>`,
+  };
+  /** Kart yüzü SVG (c: {s, r}) */
+  function cardSVG(c, o) {
+    o = o || {};
+    if (!c) return backSVG(o);
+    const col = isRed(c.s) ? '#c1272d' : '#16181d';
+    const r = c.r === 14 ? 1 : c.r;
+    const rk = RANK(r);
+    const idx = (flip) =>
+      `<g ${flip ? 'transform="rotate(180 125 175)"' : ''}><text x="${rk === '10' ? 31 : 32}" y="52" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="${rk === '10' ? 40 : 46}" text-anchor="middle" fill="${col}" letter-spacing="${rk === '10' ? -3 : 0}">${rk}</text>${suitUse(c.s, 32, 76, 30, false, col)}</g>`;
+    let mid = '';
+    if (r >= 11) {
+      mid = `<rect x="58" y="58" width="134" height="234" rx="14" fill="${isRed(c.s) ? '#fff1ef' : '#f1f3f7'}" stroke="${col}" stroke-width="3"/>
+        <rect x="66" y="66" width="118" height="218" rx="10" fill="none" stroke="#c9a24b" stroke-width="2.5"/>
+        ${COURT[r](col)}
+        <text x="125" y="268" font-family="Georgia, serif" font-weight="700" font-size="44" text-anchor="middle" fill="${col}">${rk}</text>
+        ${suitUse(c.s, 125, 196, 40, false, col)}`;
+    } else {
+      mid = PIP_POS[r].map(([x, y, k]) => suitUse(c.s, x, y, k ? 30 * k : 40, y > 180, col)).join('');
+    }
+    return `<svg viewBox="0 0 250 350" xmlns="http://www.w3.org/2000/svg" aria-label="${SUIT_NAME[c.s]} ${rk}"><rect x="2" y="2" width="246" height="346" rx="20" fill="#fffdf7" stroke="rgba(0,0,0,.18)" stroke-width="3"/>${idx(false)}${idx(true)}${mid}</svg>`;
+  }
+  function backSVG(o) {
+    const a = (o && o.back) || '#7d1f2a';
+    const b = (o && o.back2) || '#4a0f18';
+    return `<svg viewBox="0 0 250 350" xmlns="http://www.w3.org/2000/svg" aria-label="Kapalı kart"><defs><pattern id="bzlat" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="22" height="22" fill="${b}"/><path d="M0 11h22M11 0v22" stroke="${a}" stroke-width="5"/></pattern></defs>
+      <rect x="2" y="2" width="246" height="346" rx="20" fill="#fffdf7" stroke="rgba(0,0,0,.2)" stroke-width="3"/><rect x="14" y="14" width="222" height="322" rx="13" fill="url(#bzlat)"/>
+      <rect x="14" y="14" width="222" height="322" rx="13" fill="none" stroke="#e2bf6e" stroke-width="3"/><circle cx="125" cy="175" r="44" fill="${b}" stroke="#e2bf6e" stroke-width="4"/>
+      <text x="125" y="191" font-family="Georgia, serif" font-weight="700" font-size="44" text-anchor="middle" fill="#f8e2a4">BG</text></svg>`;
+  }
+  const deck52 = () => {
+    const d = [];
+    for (const s of SUITS) for (let r = 1; r <= 13; r++) d.push({ s, r, id: s + r });
+    return d;
+  };
+
+  root.BZ = {
+    $, $$, el, esc, sleep, clamp, lerp, rng, shuffle, newSeed, store, botNames, reduceMotion,
+    snd: SND, haptic, icon, toast, modal, closeModals, hasModal, banner, confetti,
+    startScreen, showRules, hud, gameMenu, results,
+    dieHTML, setDie, rollDice, dieRot,
+    cards: { SUITS, SUIT_NAME, SUIT_SYM, RANK, isRed, cardSVG, backSVG, deck52, suitUse, SUIT_PATH },
+  };
+})(window);
+
+</script>
+<script>
+window.GAME_ART = "<svg viewBox=\"0 0 360 220\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"yzc\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#4a1d12\"/><stop offset=\".45\" stop-color=\"#9c4a2a\"/><stop offset=\".6\" stop-color=\"#7a3219\"/><stop offset=\"1\" stop-color=\"#3a140b\"/></linearGradient><radialGradient id=\"yzf\" cx=\".5\" cy=\".4\" r=\".7\"><stop offset=\"0\" stop-color=\"#1f6b4c\"/><stop offset=\"1\" stop-color=\"#0a2b1f\"/></radialGradient></defs><ellipse cx=\"180\" cy=\"150\" rx=\"170\" ry=\"62\" fill=\"url(#yzf)\"/><ellipse cx=\"180\" cy=\"150\" rx=\"170\" ry=\"62\" fill=\"none\" stroke=\"#c9a46a\" stroke-width=\"4\"/><g transform=\"translate(110 70) rotate(-12)\"><path d=\"M-34 0 L34 0 L26 86 L-26 86 Z\" fill=\"url(#yzc)\"/><ellipse cx=\"0\" cy=\"0\" rx=\"34\" ry=\"9\" fill=\"#5b2614\"/><ellipse cx=\"0\" cy=\"86\" rx=\"26\" ry=\"7\" fill=\"#2b0f08\"/><path d=\"M-30 18 h60 M-28 62 h56\" stroke=\"#e2bf6e\" stroke-opacity=\".6\" stroke-width=\"3\"/></g><g><rect x=\"196\" y=\"118\" width=\"38\" height=\"38\" rx=\"8\" fill=\"#fffdf6\" stroke=\"#cdbb92\" stroke-width=\"2\" transform=\"rotate(-10 215 137)\"/><g fill=\"#1b120c\" transform=\"rotate(-10 215 137)\"><circle cx=\"205\" cy=\"128\" r=\"3.6\"/><circle cx=\"225\" cy=\"128\" r=\"3.6\"/><circle cx=\"215\" cy=\"137\" r=\"3.6\"/><circle cx=\"205\" cy=\"146\" r=\"3.6\"/><circle cx=\"225\" cy=\"146\" r=\"3.6\"/></g><rect x=\"244\" y=\"132\" width=\"38\" height=\"38\" rx=\"8\" fill=\"#fffdf6\" stroke=\"#cdbb92\" stroke-width=\"2\" transform=\"rotate(14 263 151)\"/><g fill=\"#1b120c\" transform=\"rotate(14 263 151)\"><circle cx=\"253\" cy=\"142\" r=\"3.6\"/><circle cx=\"273\" cy=\"160\" r=\"3.6\"/><circle cx=\"263\" cy=\"151\" r=\"3.6\"/></g><rect x=\"160\" y=\"150\" width=\"34\" height=\"34\" rx=\"7\" fill=\"#fffdf6\" stroke=\"#cdbb92\" stroke-width=\"2\" transform=\"rotate(24 177 167)\"/><g fill=\"#c1272d\" transform=\"rotate(24 177 167)\"><circle cx=\"177\" cy=\"167\" r=\"4.4\"/></g></g><g><rect x=\"214\" y=\"30\" width=\"130\" height=\"50\" rx=\"14\" fill=\"#1a0e09\" stroke=\"#e2bf6e\" stroke-width=\"2.5\"/><text x=\"279\" y=\"64\" text-anchor=\"middle\" font-family=\"Georgia,serif\" font-weight=\"700\" font-size=\"26\" fill=\"#f8e2a4\">YALAN!</text></g></svg>";
+/* =====================================================================
+   YALANCI ZAR
+   Herkesin zarı kupanın altında. Sırayla teklif: "masada en az q tane f var" (birler joker ise 1'ler
+   her yüzü sayar). Teklif yükseltilir (daha çok adet ya da aynı adette büyük yüz) ya da "Yalan!" denir.
+   "Tam!" diyen, sayının tam tuttuğunu iddia eder: tutarsa bir zar geri kazanır, tutmazsa bir zar kaybeder.
+   Zarı biten elenir; son kalan kazanır.
+   ===================================================================== */
+(function () {
+  'use strict';
+  const { $, $$, el, sleep, esc, snd: SND } = BZ;
+
+  /* ---------------- motor ---------------- */
+  function newGame(n, opts, rnd) {
+    const st = { n, dice: new Array(n).fill(5), cups: [], bid: null, bidder: null, cur: 0, round: 0, jokers: !!opts.jokers, tam: !!opts.tam, over: false, winner: null, log: [], out: [], rnd: rnd || Math.random };
+    return st;
+  }
+  const alive = (st) => st.dice.map((d, i) => (d > 0 ? i : -1)).filter((i) => i >= 0);
+  const nextAlive = (st, p) => {
+    for (let k = 1; k <= st.n; k++) {
+      const q = (p + k) % st.n;
+      if (st.dice[q] > 0) return q;
+    }
+    return p;
+  };
+  function newRound(st, starter) {
+    st.round += 1;
+    st.cups = st.dice.map((d) => Array.from({ length: d }, () => 1 + Math.floor(st.rnd() * 6)));
+    st.bid = null;
+    st.bidder = null;
+    st.cur = st.dice[starter] > 0 ? starter : nextAlive(st, starter);
+    st.log = [];
+  }
+  const total = (st) => st.dice.reduce((a, b) => a + b, 0);
+  const minFace = (st) => (st.jokers ? 2 : 1);
+  function validBid(st, q, f) {
+    if (f < minFace(st) || f > 6 || q < 1 || q > total(st)) return false;
+    if (!st.bid) return true;
+    return q > st.bid.q || (q === st.bid.q && f > st.bid.f);
+  }
+  function countFace(st, f) {
+    let c = 0;
+    st.cups.forEach((cup) => cup.forEach((v) => (v === f || (st.jokers && v === 1 && f !== 1) ? c++ : 0)));
+    return c;
+  }
+  /** Eylem: {t:'bid', q, f} | {t:'liar'} | {t:'tam'} → olay */
+  function act(st, a) {
+    const p = st.cur;
+    if (a.t === 'bid') {
+      if (!validBid(st, a.q, a.f)) return { ok: false };
+      st.bid = { q: a.q, f: a.f };
+      st.bidder = p;
+      st.log.push({ p, q: a.q, f: a.f });
+      st.cur = nextAlive(st, p);
+      return { ok: true, t: 'bid', p, q: a.q, f: a.f };
+    }
+    if (!st.bid) return { ok: false };
+    const cnt = countFace(st, st.bid.f);
+    const b = st.bidder;
+    let loser = null;
+    let gainer = null;
+    if (a.t === 'liar') loser = cnt >= st.bid.q ? p : b;
+    else if (a.t === 'tam') {
+      if (!st.tam) return { ok: false };
+      if (cnt === st.bid.q) gainer = p;
+      else loser = p;
+    } else return { ok: false };
+    const res = { ok: true, t: a.t, p, bidder: b, bid: Object.assign({}, st.bid), count: cnt, loser, gainer, cups: st.cups.map((c) => c.slice()) };
+    if (loser != null) {
+      st.dice[loser] -= 1;
+      if (!st.dice[loser]) st.out.push(loser); // elenme sırası
+    }
+    if (gainer != null && st.dice[gainer] < 5) st.dice[gainer] += 1;
+    const al = alive(st);
+    if (al.length === 1) {
+      st.over = true;
+      st.winner = al[0];
+      st.out.push(al[0]);
+    }
+    res.next = loser != null ? loser : gainer;
+    return res;
+  }
+
+  /* ---------------- yapay zekâ ---------------- */
+  function binomTail(n, p, k) {
+    if (k <= 0) return 1;
+    if (k > n) return 0;
+    let s = 0;
+    let c = 1;
+    for (let i = 0; i <= n; i++) {
+      if (i > 0) c = (c * (n - i + 1)) / i;
+      if (i >= k) s += c * Math.pow(p, i) * Math.pow(1 - p, n - i);
+    }
+    return Math.min(1, s);
+  }
+  function binomExact(n, p, k) {
+    if (k < 0 || k > n) return 0;
+    let c = 1;
+    for (let i = 1; i <= k; i++) c = (c * (n - i + 1)) / i;
+    return c * Math.pow(p, k) * Math.pow(1 - p, n - k);
+  }
+  const mine = (st, p, f) => st.cups[p].filter((v) => v === f || (st.jokers && v === 1 && f !== 1)).length;
+  const probOf = (st, p, q, f) => {
+    const unk = total(st) - st.dice[p];
+    const pp = st.jokers && f !== 1 ? 1 / 3 : 1 / 6;
+    return binomTail(unk, pp, q - mine(st, p, f));
+  };
+  function decide(st, p, level) {
+    const persona = 0.36 + ((p * 37) % 10) / 100; // her bota küçük kişilik farkı
+    const unk = total(st) - st.dice[p];
+    const pp = (f) => (st.jokers && f !== 1 ? 1 / 3 : 1 / 6);
+    if (st.bid) {
+      const pt = probOf(st, p, st.bid.q, st.bid.f);
+      // tam: beklenen sayıya çok yakınsa ara sıra
+      if (st.tam && level !== 'kolay') {
+        const pe = binomExact(unk, pp(st.bid.f), st.bid.q - mine(st, p, st.bid.f));
+        if (pe > 0.27 && st.rnd() < 0.5 && st.dice[p] < 5) return { t: 'tam' };
+      }
+      if (pt < persona - (level === 'kolay' ? 0.12 : 0) + (level === 'zor' ? 0.06 : 0) && st.rnd() > 0.08) return { t: 'liar' };
+    }
+    // aday teklifler
+    const cands = [];
+    const q0 = st.bid ? st.bid.q : Math.max(1, Math.floor(total(st) / (st.jokers ? 4 : 6)));
+    for (let q = q0; q <= q0 + 2; q++)
+      for (let f = minFace(st); f <= 6; f++) {
+        if (!validBid(st, q, f)) continue;
+        let v = probOf(st, p, q, f);
+        v += mine(st, p, f) * 0.03; // elindekini teklif etmeyi sev
+        if (st.rnd() < (level === 'kolay' ? 0.35 : 0.14)) v += 0.25; // blöf
+        v -= (q - q0) * 0.06;
+        cands.push({ q, f, v });
+      }
+    if (!cands.length) return { t: 'liar' };
+    cands.sort((a, b) => b.v - a.v);
+    const pick = level === 'kolay' ? cands[Math.floor(st.rnd() * Math.min(4, cands.length))] : cands[0];
+    if (st.bid && probOf(st, p, pick.q, pick.f) < 0.18 && probOf(st, p, st.bid.q, st.bid.f) < 0.55) return { t: 'liar' };
+    return { t: 'bid', q: pick.q, f: pick.f };
+  }
+
+  /* ---------------- görünüm ---------------- */
+  const S = BZ.store('yalanci', { players: 4, level: 'orta', jokers: true, tam: true, sound: true });
+  const set = S.v;
+  SND.setOn(set.sound);
+  const G = { st: null, names: [], gen: 0, testMul: 1, hud: null, busy: false, q: 1, f: 2, peek: true };
+  window.__YZ = G;
+  const D = (ms) => (BZ.reduceMotion ? Math.min(ms, 40) : ms * G.testMul);
+  const FACE = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+  const pipFace = (v, cls) => `<span class="yz-face ${cls || ''}" data-v="${v}">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => `<i class="${{ 1: [5], 2: [3, 7], 3: [3, 5, 7], 4: [1, 3, 7, 9], 5: [1, 3, 5, 7, 9], 6: [1, 3, 4, 6, 7, 9] }[v].indexOf(i) >= 0 ? 'on' : ''}"></i>`).join('')}</span>`;
+  function seatPos(i, n) {
+    // ben altta (i=0); diğerleri üstte yay boyunca
+    if (i === 0) return { x: 50, y: 84 };
+    const k = n - 1;
+    const a = Math.PI * (1 - i / (k + 1)); // soldan sağa
+    return { x: 50 + Math.cos(a) * 41, y: 52 - Math.sin(a) * 36 };
+  }
+  function seatsHTML() {
+    const st = G.st;
+    let h = '';
+    for (let i = 0; i < st.n; i++) {
+      const p = seatPos(i, st.n);
+      h += `<div class="yz-seat${i === 0 ? ' me' : ''}" data-p="${i}" style="left:${p.x}%;top:${p.y}%">
+        <div class="yz-cup" data-cup="${i}"><div class="yz-cupb"></div><div class="yz-rev"></div></div>
+        <div class="yz-tag"><span class="yz-av">${esc(G.names[i].charAt(0))}</span><b>${esc(G.names[i])}</b><span class="yz-dn" data-dn="${i}"></span></div>
+        <div class="yz-say" data-say="${i}"></div></div>`;
+    }
+    return h;
+  }
+  function paint() {
+    const st = G.st;
+    for (let i = 0; i < st.n; i++) {
+      const dn = $(`[data-dn="${i}"]`);
+      if (dn) dn.innerHTML = '<i></i>'.repeat(st.dice[i]) + (st.dice[i] ? '' : '<em>elendi</em>');
+      const seat = $(`.yz-seat[data-p="${i}"]`);
+      if (seat) {
+        seat.classList.toggle('on', !st.over && st.cur === i && !G.busy);
+        seat.classList.toggle('out', st.dice[i] === 0);
+      }
+    }
+    // benim zarlarım
+    const my = $('#yzMine');
+    my.innerHTML = st.dice[0] ? st.cups[0].map((v) => BZ.dieHTML(v, 46, 0)).join('') : '<span class="yz-out">Zarın bitti, izliyorsun</span>';
+    // teklif
+    const b = st.bid;
+    $('#yzBid').innerHTML = b
+      ? `<span class="yz-bq">${b.q}</span><span class="yz-x">×</span>${pipFace(b.f, 'big')}<span class="yz-by">${esc(G.names[st.bidder])}</span>`
+      : `<span class="yz-none">${st.over ? '' : `${esc(G.names[st.cur])} açılış teklifini veriyor`}</span>`;
+    $('#yzTotal').textContent = `Masada ${total(st)} zar${st.jokers ? ' · birler joker' : ''}`;
+    // kontroller
+    const myTurn = !st.over && st.cur === 0 && st.dice[0] > 0 && !G.busy;
+    $('#yzCtl').classList.toggle('off', !myTurn);
+    if (myTurn) {
+      if (!validBid(st, G.q, G.f)) {
+        // geçerli en küçük teklife çek
+        const q0 = b ? b.q : 1;
+        let found = false;
+        for (let q = q0; q <= total(st) && !found; q++)
+          for (let f = minFace(st); f <= 6 && !found; f++)
+            if (validBid(st, q, f)) {
+              G.q = q;
+              G.f = Math.max(f, G.f >= f && validBid(st, q, G.f) ? G.f : f);
+              found = true;
+            }
+      }
+    }
+    $('#yzQ').textContent = G.q;
+    $$('#yzFaces button').forEach((n) => {
+      const f = +n.dataset.f;
+      n.setAttribute('aria-pressed', f === G.f);
+      n.disabled = !myTurn || f < minFace(st);
+    });
+    $('[data-y="bid"]').disabled = !myTurn || !validBid(st, G.q, G.f);
+    $('[data-y="liar"]').disabled = !myTurn || !b;
+    $('[data-y="tam"]').disabled = !myTurn || !b || !st.tam;
+    $('[data-y="tam"]').hidden = !st.tam;
+    $('[data-y="qm"]').disabled = !myTurn;
+    $('[data-y="qp"]').disabled = !myTurn;
+    const pv = myTurn && validBid(st, G.q, G.f) ? Math.round(probOf(st, 0, G.q, G.f) * 100) : null;
+    $('#yzOdds').textContent = pv == null ? '' : `Tutma olasılığı ~%${pv}`;
+    if (st.over) G.hud.msg('Oyun bitti', '');
+    else if (G.busy) G.hud.msg('Kupalar açılıyor…', 'warn');
+    else if (st.cur === 0 && st.dice[0] > 0) G.hud.msg(b ? 'Yükselt ya da “Yalan!” de' : 'Açılış teklifini ver', 'me');
+    else G.hud.msg(`${G.names[st.cur]} düşünüyor…`, '');
+  }
+  function say(p, text, kind) {
+    const n = $(`[data-say="${p}"]`);
+    if (!n) return;
+    n.innerHTML = text;
+    n.className = 'yz-say show ' + (kind || '');
+    clearTimeout(n._t);
+    n._t = setTimeout(() => n.classList.remove('show'), 2200);
+  }
+  async function startRound(starter) {
+    const st = G.st;
+    newRound(st, starter);
+    G.q = Math.max(1, Math.floor(total(st) / (st.jokers ? 4 : 6)));
+    G.f = minFace(st);
+    $$('.yz-cup').forEach((c) => c.classList.remove('up'));
+    $$('.yz-rev').forEach((r) => (r.innerHTML = ''));
+    // kupalar sallanır
+    $$('.yz-cup').forEach((c) => {
+      c.classList.remove('shake');
+      void c.offsetWidth;
+      c.classList.add('shake');
+    });
+    SND.play('shuffle');
+    paint();
+    await sleep(D(650));
+    if (st.dice[0] > 0) {
+      const nodes = $$('#yzMine .bz-die');
+      await BZ.rollDice(nodes, st.cups[0], { from: { x: 0, y: 90 }, dur: D(700) });
+    }
+    BZ.toast(`${st.round}. el · ${G.names[st.cur]} başlıyor`, '', 1300);
+    drive();
+  }
+  function drive() {
+    const st = G.st;
+    paint();
+    if (st.over || G.busy || st.cur === 0) return;
+    const gen = G.gen;
+    setTimeout(async () => {
+      if (gen !== G.gen || G.busy || st.over || st.cur === 0) return;
+      const a = decide(st, st.cur, set.level);
+      await doAct(a);
+    }, D(900 + Math.random() * 700));
+  }
+  async function doAct(a) {
+    const st = G.st;
+    const gen = G.gen;
+    const p = st.cur;
+    const r = act(st, a);
+    if (!r.ok) {
+      SND.play('error');
+      return;
+    }
+    if (r.t === 'bid') {
+      SND.play('place');
+      say(p, `${r.q} × ${pipFace(r.f)}`, '');
+      paint();
+      if (p === 0) G.q = r.q;
+      drive();
+      return;
+    }
+    // açılış
+    G.busy = true;
+    say(p, r.t === 'liar' ? 'YALAN!' : 'TAM!', 'loud');
+    SND.play(r.t === 'liar' ? 'buzz' : 'ding');
+    paint();
+    await sleep(D(900));
+    if (gen !== G.gen) return;
+    await reveal(r);
+    if (gen !== G.gen) return;
+    G.busy = false;
+    paint();
+    if (st.over) return finish();
+    await sleep(D(600));
+    startRound(r.next != null ? r.next : st.cur);
+  }
+  async function reveal(r) {
+    const st = G.st;
+    // bütün kupalar kalkar
+    for (let i = 0; i < st.n; i++) {
+      const c = $(`.yz-cup[data-cup="${i}"]`);
+      if (!c || !r.cups[i].length) continue;
+      $('.yz-rev', c).innerHTML = r.cups[i].map((v) => pipFace(v, v === r.bid.f || (st.jokers && v === 1 && r.bid.f !== 1) ? 'hit' : 'miss')).join('');
+      c.classList.add('up');
+    }
+    SND.play('whoosh');
+    await sleep(D(500));
+    // eşleşenler tek tek sayılır
+    const hits = $$('.yz-rev .yz-face.hit');
+    const counter = $('#yzCount');
+    counter.className = 'yz-count show';
+    for (let k = 0; k < hits.length; k++) {
+      hits[k].classList.add('lit');
+      counter.innerHTML = `${k + 1} <small>/ ${r.bid.q}</small>`;
+      SND.play('tick');
+      await sleep(D(hits.length > 10 ? 110 : 190));
+    }
+    if (!hits.length) counter.innerHTML = `0 <small>/ ${r.bid.q}</small>`;
+    await sleep(D(350));
+    const ok = r.count >= r.bid.q;
+    let title;
+    if (r.t === 'liar') title = ok ? 'Doğruymuş!' : 'Yalanmış!';
+    else title = r.gainer != null ? 'Tam tuttu!' : 'Tutmadı!';
+    const who = r.loser != null ? r.loser : r.gainer;
+    const sub = r.loser != null ? `${G.names[r.loser]} bir zar kaybetti` : `${G.names[r.gainer]} bir zar geri kazandı`;
+    counter.className = 'yz-count show ' + (ok ? 'ok' : 'no');
+    BZ.banner(title, sub, r.loser !== 0);
+    SND.play(r.loser === 0 ? 'wrong' : r.gainer === 0 || (r.loser != null && r.loser !== 0) ? 'correct' : 'ding');
+    if (r.loser != null) {
+      const s = $(`.yz-seat[data-p="${r.loser}"]`);
+      if (s) {
+        s.classList.add('lose');
+        setTimeout(() => s.classList.remove('lose'), 1200);
+      }
+      if (G.st.dice[r.loser] === 0) setTimeout(() => BZ.toast(`${G.names[r.loser]} elendi`, r.loser === 0 ? 'bad' : '', 1600), D(900));
+    }
+    paint();
+    await sleep(D(1900));
+    counter.className = 'yz-count';
+  }
+  function finish() {
+    const st = G.st;
+    const w = st.winner;
+    const win = w === 0;
+    BZ.banner(win ? 'KAZANDIN!' : `${G.names[w].toLocaleUpperCase('tr-TR')} KAZANDI`, 'Masada son zar onun', win);
+    SND.play(win ? 'win' : 'lose');
+    if (win) BZ.confetti(120);
+    setTimeout(() => {
+      const rows = st.out
+        .slice()
+        .reverse()
+        .map((p, k) => ({ name: G.names[p], val: k, label: k === 0 ? 'Kazandı' : `${k + 1}. sırada elendi`, me: p === 0, win: p === w }));
+      BZ.results({ title: win ? 'Kazandın!' : `${G.names[w]} kazandı`, sub: 'Zarı en son biten kazanır.', rows, tiePlaces: false, onAgain: () => startGame(), onHome: () => home() });
+    }, D(1800));
+  }
+  const RULES = `<p><b>Başlangıç:</b> herkesin 5 zarı var. Her elde zarlar kupanın altında atılır; yalnız kendi zarlarını görürsün.</p>
+    <p><b>Teklif:</b> sırası gelen, masadaki bütün zarlar için bir iddiada bulunur: “en az 4 tane beşli var” gibi. Sonraki oyuncu ya teklifi yükseltir (daha çok adet ya da aynı adette daha büyük yüz) ya da itiraz eder.</p>
+    <p><b>Birler joker</b> (açıksa): 1'ler her yüzün yerine sayılır; teklifler 2–6 yüzlerine verilir.</p>
+    <p><b>Yalan!</b>: son teklife inanmıyorsan söyle. Kupalar açılır: teklif tutuyorsa itiraz eden, tutmuyorsa teklif veren bir zar kaybeder.</p>
+    <p><b>Tam!</b> (açıksa): sayının tam olarak tuttuğunu iddia edersin. Tutarsa bir zar geri kazanırsın (en çok 5), tutmazsa bir zar kaybedersin.</p>
+    <p><b>Bitiş:</b> zarı biten elenir. Kaybeden yeni eli başlatır. Masada son kalan kazanır.</p>
+    <p><b>İpucu:</b> “Tutma olasılığı” senin zarlarına göre tahmini olasılıktır; botlar da aşağı yukarı böyle hesaplar ama blöf de yapar.</p>`;
+  function home() {
+    G.gen++;
+    BZ.closeModals();
+    $('#game').hidden = true;
+    $('#start').hidden = false;
+    BZ.startScreen({
+      root: $('#start'),
+      title: 'Yalancı Zar',
+      tagline: 'Zarlar kupanın altında; kimse kimseninkini görmüyor. Teklifi yükselt, blöf yap ya da gözünü kırpmadan “Yalan!” de. Masada son zar kimde kalırsa o kazanır.',
+      chips: ['2–6 kişi', 'Blöf', '10–15 dakika'],
+      art: window.GAME_ART,
+      settings: set,
+      save: () => S.save(),
+      options: [
+        { key: 'players', label: 'Oyuncu sayısı', choices: [[2, '2'], [3, '3'], [4, '4'], [5, '5'], [6, '6']] },
+        { key: 'level', label: 'Bot seviyesi', choices: [['kolay', 'Saf'], ['orta', 'Kurnaz'], ['zor', 'Pokerci']] },
+        { key: 'jokers', label: 'Birler', choices: [[true, 'Joker'], [false, 'Normal']] },
+        { key: 'tam', label: '“Tam!” çağrısı', choices: [[true, 'Açık'], [false, 'Kapalı']] },
+      ],
+      actions: [{ id: 'play', label: 'Masaya otur', kind: 'gold big', icon: 'play' }],
+      onAction: () => startGame(),
+      rules: RULES,
+    });
+  }
+  function startGame() {
+    G.gen++;
+    BZ.closeModals();
+    $('#start').hidden = true;
+    $('#game').hidden = false;
+    const n = +set.players || 4;
+    G.names = ['Sen', ...BZ.botNames(n - 1)];
+    G.st = newGame(n, { jokers: set.jokers, tam: set.tam });
+    G.busy = false;
+    G.hud = BZ.hud({
+      root: $('#hud'),
+      title: 'Yalancı Zar',
+      sub: `${n} oyuncu · ${{ kolay: 'Saf', orta: 'Kurnaz', zor: 'Pokerci' }[set.level]} botlar`,
+      onMenu: () => BZ.gameMenu({ title: 'Yalancı Zar', rules: RULES, onAction: (m) => (m === 'restart' ? startGame() : m === 'home' ? home() : null) }),
+      onSound: (v) => {
+        set.sound = v;
+        S.save();
+      },
+    });
+    $('#yzSeats').innerHTML = seatsHTML();
+    startRound(Math.floor(Math.random() * n));
+  }
+  function boot() {
+    $('#game').insertAdjacentHTML(
+      'beforeend',
+      `<div id="yzWrap" class="yz-wrap">
+        <div class="yz-table"><div class="yz-felt"></div>
+          <div class="yz-center"><div id="yzBid" class="yz-bid"></div><div id="yzTotal" class="yz-total"></div><div id="yzCount" class="yz-count"></div></div>
+          <div id="yzSeats"></div></div>
+        <div class="yz-dock"><div id="yzMine" class="yz-mine"></div>
+          <div id="yzCtl" class="yz-ctl">
+            <div class="yz-qrow"><button class="bz-ib" data-y="qm" aria-label="Azalt">−</button><span id="yzQ" class="yz-q">1</span><button class="bz-ib" data-y="qp" aria-label="Artır">+</button><span class="yz-x">×</span>
+              <div id="yzFaces" class="yz-faces">${[1, 2, 3, 4, 5, 6].map((f) => `<button data-f="${f}" aria-label="${f}">${pipFace(f)}</button>`).join('')}</div></div>
+            <div class="yz-arow"><button class="bz-btn gold" data-y="bid">Teklif ver</button><button class="bz-btn danger" data-y="liar">Yalan!</button><button class="bz-btn" data-y="tam">Tam!</button></div>
+            <div id="yzOdds" class="yz-odds"></div></div></div></div>`,
+    );
+    $('#yzCtl').addEventListener('click', (e) => {
+      SND.unlock();
+      const st = G.st;
+      if (!st || st.cur !== 0 || G.busy || st.over) return;
+      const fb = e.target.closest('#yzFaces button');
+      if (fb) {
+        G.f = +fb.dataset.f;
+        SND.play('select');
+        return paint();
+      }
+      const b = e.target.closest('[data-y]');
+      if (!b || b.disabled) return;
+      const y = b.dataset.y;
+      if (y === 'qm') G.q = Math.max(1, G.q - 1);
+      else if (y === 'qp') G.q = Math.min(total(st), G.q + 1);
+      else if (y === 'bid') return doAct({ t: 'bid', q: G.q, f: G.f });
+      else if (y === 'liar') return doAct({ t: 'liar' });
+      else if (y === 'tam') return doAct({ t: 'tam' });
+      SND.play('tap');
+      paint();
+    });
+    home();
+  }
+  window.__YZT = { newGame, newRound, act, decide, validBid, countFace, probOf, doAct: (a) => doAct(a) };
+  boot();
+})();
+
+</script>
+</body>
+</html>
